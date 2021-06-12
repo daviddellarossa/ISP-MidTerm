@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="David Della Rossa">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="css/stylesheet.css">
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="node_modules/p5/lib/p5.js"></script>
+        <script src="node_modules/p5/lib/addons/p5.sound.js"></script>
+        <script src="js/p5Sketch.js"></script>
+        <script src="js/index.js"></script>
+        <title>Intelligent Signal Processing Mid-Term assignment - Part 1</title>
+    </head>
+    <body>
+        <section id="playbackControls">
+            <div class="container-fluid text-center">
+                <!-- All images from https://fonts.google.com/icons -->
+                <button class="btn btn-outline-dark" id="pauseBtn"><img src="images/pause_black_24dp.svg" title="Pause" alt="Pause"></button>
+                <button class="btn btn-outline-success" id="playBtn"><img src="images/play_arrow_black_24dp.svg" title="Play" alt="Play"></button>
+                <button class="btn btn-outline-dark" id="stopBtn"><img src="images/stop_black_24dp.svg" title="Stop" alt="Stop"></button>
+                <button class="btn btn-outline-dark" id="skipToStartBtn"><img src="images/skip_previous_black_24dp.svg" title="Skip to start" alt="Skip to start"></button>
+                <button class="btn btn-outline-dark" id="skipToEndBtn"><img src="images/skip_next_black_24dp.svg" title="Skip to end" alt="Skip to end"></button>
+                <button class="btn btn-outline-dark" id="loopBtn" data-bs-toggle="button"><img src="images/loop_black_24dp.svg" title="Loop" alt="Loop"></button>
+                <button class="btn btn-outline-danger" id="recordBtn" data-bs-toggle="button"><img src="images/radio_button_checked_black_24dp.svg" title="Record" alt="Record"></button>
+            </div>
+        </section>
+        <div class="container">
+            <div class="row">
+                <section id="lowpassFilter" class="col-4 border rounded">
+                    <header>Low-pass filter</header>
+                    <div id="lpfCutoffFrequency">
+                        <label for="lpfCutoffFrequencySlider" class="form-label">Cutoff Frequency</label>
+                        <input type="range" class="form-range" id="lpfCutoffFrequencySlider">
+                    </div>
+                    <div>
+                        <label for="lpfResonanceFrequency" class="form-label">Resonance</label>
+                        <input type="range" class="form-range" id="lpfResonanceFrequency">
+                    </div>
+                    <div>
+                        <label for="lpfDryWet" class="form-label">Dry/Wet</label>
+                        <input type="range" class="form-range" id="lpfDryWet">
+                    </div>
+                    <div>
+                        <label for="lpfOutputLevel" class="form-label">Output Level</label>
+                        <input type="range" class="form-range" id="lpfOutputLevel">
+                    </div>
+                </section>
+                
+                <section id="waveShaperDistortion"  class="col-4 border rounded">
+                    <header>Waveshaper Distortion</header>
+                    <div>
+                        <label for="wsdDistortionAmount" class="form-label">Distortion Amount</label>
+                        <input type="range" class="form-range" id="wsdDistortionAmount">
+                    </div>
+                    <div>
+                        <label for="wsdOversample" class="form-label">Oversample</label>
+                        <input type="range" class="form-range" id="wsdOversample">
+                    </div>
+                    <div>
+                        <label for="wsdDryWet" class="form-label">Dry/Wet</label>
+                        <input type="range" class="form-range" id="wsdDryWet">
+                    </div>
+                    <div>
+                        <label for="wsdOutputLevel" class="form-label">Output Level</label>
+                        <input type="range" class="form-range" id="wsdOutputLevel">
+                    </div>
+                </section>
+
+                <section id="dynamicCompressor"  class="col-4 border rounded">
+                    <header>Dynamic Compressor</header>
+                    <div>
+                        <label for="dcAttack" class="form-label">Attack</label>
+                        <input type="range" class="form-range" id="dcAttack">
+                    </div>
+                    <div>
+                        <label for="dcKnee" class="form-label">Knee</label>
+                        <input type="range" class="form-range" id="dcKnee">
+                    </div>
+                    <div>
+                        <label for="dcRelease" class="form-label">Release</label>
+                        <input type="range" class="form-range" id="dcRelease">
+                    </div>
+                    <div>
+                        <label for="dcRatio" class="form-label">Ratio</label>
+                        <input type="range" class="form-range" id="dcRatio">
+                    </div>
+                    <div>
+                        <label for="dcThreshold" class="form-label">Threshold</label>
+                        <input type="range" class="form-range" id="dcThreshold">
+                    </div>
+                    <div>
+                        <label for="dcDryWet" class="form-label">Dry/Wet</label>
+                        <input type="range" class="form-range" id="dcDryWet">
+                    </div>
+                    <div>
+                        <label for="dcOutputLevel" class="form-label">Output Level</label>
+                        <input type="range" class="form-range" id="dcOutputLevel">
+                    </div>
+                </section>
+            </div>
+            <div class="row">
+                <div class="col-3"></div>
+                <section id="reverb" class="col-3 border rounded">
+                    <header>Reverb</header>
+                    <div>
+                        <label for="revDuration" class="form-label">Duration</label>
+                        <input type="range" class="form-range" id="revDuration">
+                    </div>
+                    <div>
+                        <label for="revDecayRate" class="form-label">Decay Rate</label>
+                        <input type="range" class="form-range" id="revDecayRate">
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-primary" id="revReverse">Reverse</label> 
+                    </div>
+                    <div>
+                        <label for="revDryWet" class="form-label">Dry/Wet</label>
+                        <input type="range" class="form-range" id="revDryWet">
+                    </div>
+                    <div>
+                        <label for="revOutputLevel" class="form-label">Output Level</label>
+                        <input type="range" class="form-range" id="revOutputLevel">
+                    </div>
+                </section>
+                <section id="masterVolume" class="col-3 border rounded">
+                    <header>Master</header>
+                    <div>
+                        <label for="mstVolume" class="form-label">Volume</label>
+                        <input type="range" class="form-range" id="mstVolume">
+                    </div>
+                </section>
+                <div class="col-3"></div>
+                
+            </div>
+            <div class="row">
+                <div class="col-3"></div>
+                <section id="spectrumIn" class="col-3 border rounded"></section>
+                <section id="spectrumOut" class="col-3 border rounded"></section>
+                <div class="col-3"></div>
+            </div>
+        </div>
+    </body>
+</html>
