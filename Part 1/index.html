@@ -23,6 +23,12 @@
         <title>Intelligent Signal Processing Mid-Term assignment - Part 1</title>
     </head>
     <body>
+        <main>
+            <header>
+                <h1>Exercise 1</h1>
+                <h2>by David Della Rossa</h2>
+            </header>
+        </main>
         <section id="playbackControls">
             <div class="container-fluid text-center">
                 <!-- All images from https://fonts.google.com/icons -->
@@ -143,11 +149,27 @@
                 <div class="col-3"></div>
                 
             </div>
+            <!-- <div class="row">
+                <div class="col-3"></div>
+                <section id="spectrumIn" class="col-3 border rounded">
+                    <header>Input spectrum</header>
+                    <div id="spectrumInCanvas"></div>
+                </section>
+                <section id="spectrumOut" class="col-3 border rounded">
+                    <header>Output spectrum</header>
+                    <div id="spectrumOutCanvas"></div>
+                </section>
+                <div class="col-3"></div>
+            </div> -->
+            <div id="soundSpectrum">
+                <div class="row border rounded">
+                    <header class="col-6 text-center">Input Spectrum</header>
+                    <header class="col-6 text-center">Output Spectrum</header>
+                </div>
+
+            </section>
             <div class="row">
-                <div class="col-3"></div>
-                <section id="spectrumIn" class="col-3 border rounded"></section>
-                <section id="spectrumOut" class="col-3 border rounded"></section>
-                <div class="col-3"></div>
+                <div id="spectrumCanvas" class="col-12"></div>
             </div>
         </div>
     </body>

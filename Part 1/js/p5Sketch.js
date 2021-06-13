@@ -35,13 +35,13 @@ let sketchP5 = function(p){
 
         this.buttons.pause.mouseClicked((e) => {
             console.log('Pause button pressed');
-                this.player.pause()
+                this.player.pause();
         });
 
         this.buttons.loop.mouseClicked((e) => {
             console.log('Loop button pressed');
-            let isLoopBtnPressed = buttons.loop.elt.ariaPressed === 'true';
-            this.player.setLoop(isLoopBtnPressed)
+            let isLoopBtnPressed = this.buttons.loop.elt.ariaPressed === 'true';
+            this.player.setLoop(isLoopBtnPressed);
         });
 
         this.buttons.record.mouseClicked((e) => {
@@ -49,7 +49,7 @@ let sketchP5 = function(p){
         });
 
         this.buttons.skipToEnd.mouseClicked((e) => {
-            this.player.jump(this.sound.duration() - 1);
+            this.player.jump(this.player.duration() - 1);
         });
 
         this.buttons.skipToStart.mouseClicked((e) => {
@@ -288,10 +288,46 @@ let sketchP5 = function(p){
         this.dynamicCompressorEffect.connect(this.reverbEffect)
         this.reverbEffect.connect(this.masterVolumeEffect)
         this.masterVolumeEffect.connect();
+
+        this.inputFft = new p5.FFT();
+        this.inputFft.setInput(this.player);
+
+        this.outputFft = new p5.FFT()
+        //this.inputFft.setInput(this.masterVolumeEffect);
+
+        let canvasContainer = p.select('#spectrumCanvas');
+        this.canvasIn = p.createCanvas(canvasContainer.width, canvasContainer.width / 4);
+        this.canvasIn.background(200)
+        this.canvasIn.parent('spectrumCanvas');
+
+        // this.canvasOut = p.createCanvas(200, 200);
+        // this.canvasOut.background(0, 100, 0);
+        // this.canvasOut.parent('spectrumOutCanvas');
     
     }
 
-    p.draw = function() { }
+    p.draw = function() {
+        //let canvasContainer = p.select('#spectrumCanvas');
+        this.canvasIn.background(255)
+        let spectrumIn = this.inputFft.analyze();
+        let spectrumOut = this.outputFft.analyze();
+        
+        p.beginShape();
+        
+        for (i = 0; i < spectrumIn.length; i++) {
+            var x = p.map(i, 0, spectrumIn.length, 0, this.canvasIn.width / 2);
+            p.vertex(x, p.map(spectrumIn[i], 0, 255, this.canvasIn.height * 0.9, 0));
+        }
+
+        
+        for (i = 0; i < spectrumOut.length; i++) {
+            var x = p.map(i, 0, spectrumOut.length, this.canvasIn.width / 2, this.canvasIn.width);
+            p.vertex(x, p.map(spectrumOut[i], 0, 255, this.canvasIn.height * 0.9, 0));
+        }
+        p.endShape();
+
+
+    }
 }
 
 
