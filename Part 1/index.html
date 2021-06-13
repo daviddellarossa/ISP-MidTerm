@@ -12,6 +12,12 @@
         <script src="js/p5js//1.3.1/p5.sound.js"></script>
         <!-- <script src="node_modules/p5/lib/p5.js"></script>
         <script src="node_modules/p5/lib/addons/p5.sound.js"></script> -->
+        <script src="js/ButtonsReferences.js"></script>
+        <script src="js/DynamicCompressorSettings.js"></script>
+        <script src="js/LowPassFilterSettings.js"></script>
+        <script src="js/MasterSettings.js"></script>
+        <script src="js/ReverbSettings.js"></script>
+        <script src="js/WaveshaperDistortionSettings.js"></script>
         <script src="js/p5Sketch.js"></script>
         <script src="js/index.js"></script>
         <title>Intelligent Signal Processing Mid-Term assignment - Part 1</title>
@@ -35,19 +41,19 @@
                     <header>Low-pass filter</header>
                     <div id="lpfCutoffFrequency">
                         <label for="lpfCutoffFrequencySlider" class="form-label">Cutoff Frequency</label>
-                        <input type="range" class="form-range" id="lpfCutoffFrequencySlider">
+                        <input type="range" class="form-range" min="10" max="22050" step="50" id="lpfCutoffFrequencySlider">
                     </div>
                     <div>
                         <label for="lpfResonanceFrequency" class="form-label">Resonance</label>
-                        <input type="range" class="form-range" id="lpfResonanceFrequency">
+                        <input type="range" class="form-range" min="0.001" max="100" step="10" value="1" id="lpfResonanceFrequency">
                     </div>
                     <div>
                         <label for="lpfDryWet" class="form-label">Dry/Wet</label>
-                        <input type="range" class="form-range" id="lpfDryWet">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="0" id="lpfDryWet">
                     </div>
                     <div>
                         <label for="lpfOutputLevel" class="form-label">Output Level</label>
-                        <input type="range" class="form-range" id="lpfOutputLevel">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="lpfOutputLevel">
                     </div>
                 </section>
                 
@@ -55,19 +61,19 @@
                     <header>Waveshaper Distortion</header>
                     <div>
                         <label for="wsdDistortionAmount" class="form-label">Distortion Amount</label>
-                        <input type="range" class="form-range" id="wsdDistortionAmount">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" id="wsdDistortionAmount">
                     </div>
                     <div>
                         <label for="wsdOversample" class="form-label">Oversample</label>
-                        <input type="range" class="form-range" id="wsdOversample">
+                        <input type="range" class="form-range" min="0" max="2" step="1" id="wsdOversample">
                     </div>
                     <div>
                         <label for="wsdDryWet" class="form-label">Dry/Wet</label>
-                        <input type="range" class="form-range" id="wsdDryWet">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="0" id="wsdDryWet">
                     </div>
                     <div>
                         <label for="wsdOutputLevel" class="form-label">Output Level</label>
-                        <input type="range" class="form-range" id="wsdOutputLevel">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="wsdOutputLevel">
                     </div>
                 </section>
 
@@ -75,31 +81,31 @@
                     <header>Dynamic Compressor</header>
                     <div>
                         <label for="dcAttack" class="form-label">Attack</label>
-                        <input type="range" class="form-range" id="dcAttack">
+                        <input type="range" class="form-range" min="0" max="1" step="0.001" value="0.003" id="dcAttack">
                     </div>
                     <div>
                         <label for="dcKnee" class="form-label">Knee</label>
-                        <input type="range" class="form-range" id="dcKnee">
+                        <input type="range" class="form-range" min="0" max="40" step="1" value="30" id="dcKnee">
                     </div>
                     <div>
                         <label for="dcRelease" class="form-label">Release</label>
-                        <input type="range" class="form-range" id="dcRelease">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="0.25" id="dcRelease">
                     </div>
                     <div>
                         <label for="dcRatio" class="form-label">Ratio</label>
-                        <input type="range" class="form-range" id="dcRatio">
+                        <input type="range" class="form-range" min="1" max="20" step="0.1" value="12" id="dcRatio">
                     </div>
                     <div>
                         <label for="dcThreshold" class="form-label">Threshold</label>
-                        <input type="range" class="form-range" id="dcThreshold">
+                        <input type="range" class="form-range" min="-100" max="0" step="1" value="-24" id="dcThreshold">
                     </div>
                     <div>
                         <label for="dcDryWet" class="form-label">Dry/Wet</label>
-                        <input type="range" class="form-range" id="dcDryWet">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01"value="0" id="dcDryWet">
                     </div>
                     <div>
                         <label for="dcOutputLevel" class="form-label">Output Level</label>
-                        <input type="range" class="form-range" id="dcOutputLevel">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="dcOutputLevel">
                     </div>
                 </section>
             </div>
@@ -109,29 +115,29 @@
                     <header>Reverb</header>
                     <div>
                         <label for="revDuration" class="form-label">Duration</label>
-                        <input type="range" class="form-range" id="revDuration">
+                        <input type="range" class="form-range" min="0" max="10" step="0.1" value="3" id="revDuration">
                     </div>
                     <div>
                         <label for="revDecayRate" class="form-label">Decay Rate</label>
-                        <input type="range" class="form-range" id="revDecayRate">
+                        <input type="range" class="form-range" min="0" max="100" step="0.1" value="2"  id="revDecayRate">
                     </div>
                     <div>
                         <button type="button" class="btn btn-primary" id="revReverse">Reverse</label> 
                     </div>
                     <div>
                         <label for="revDryWet" class="form-label">Dry/Wet</label>
-                        <input type="range" class="form-range" id="revDryWet">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="0" id="revDryWet">
                     </div>
                     <div>
                         <label for="revOutputLevel" class="form-label">Output Level</label>
-                        <input type="range" class="form-range" id="revOutputLevel">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="revOutputLevel">
                     </div>
                 </section>
                 <section id="masterVolume" class="col-3 border rounded">
                     <header>Master</header>
                     <div>
                         <label for="mstVolume" class="form-label">Volume</label>
-                        <input type="range" class="form-range" id="mstVolume">
+                        <input type="range" class="form-range" min="0" max="1" step="0.01"  value="1" id="mstVolume">
                     </div>
                 </section>
                 <div class="col-3"></div>
