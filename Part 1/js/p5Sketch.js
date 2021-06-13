@@ -15,7 +15,7 @@ let sketchP5 = function(p){
     p.setup = function() {
         this.reverb = new ReverbSettings(p);
         this.buttons = new ButtonsReferences(p);
-        this.lowPassFilter = new LowPassFilterSettings(p);
+        this.filter = new FilterSettings(p);
         this.waveshaperDistortion = new WaveshaperDistortionSettings(p);
         this.dynamicCompressor = new DynamicCompressorSettings(p);
         this.master = new MasterSettings(p);
@@ -58,22 +58,33 @@ let sketchP5 = function(p){
 
 
         //binding lowpass filter controls
-
-        this.lowPassFilter.cutoffFrequency.mouseClicked((e) => {
-            console.log(`LowPass Filter - Cutoff Frequency: ${this.lowPassFilter.cutoffFrequency.value()}`);
-            this.lowPassFilterEffect.set(this.lowPassFilter.cutoffFrequency.value(), this.lowPassFilter.resonance.value());
+        this.filter.filterTypeLowPass.mouseClicked((e) => {
+            console.log(`Filter - Filter Type: ${this.filter.filterTypeLowPass.value()}`);
+            this.filterEffect.setType(this.filter.filterTypeLowPass.value());
+        })
+        this.filter.filterTypeBandPass.mouseClicked((e) => {
+            console.log(`Filter - Filter Type: ${this.filter.filterTypeBandPass.value()}`);
+            this.filterEffect.setType(this.filter.filterTypeBandPass.value());
+        })
+        this.filter.filterTypeHighPass.mouseClicked((e) => {
+            console.log(`Filter - Filter Type: ${this.filter.filterTypeHighPass.value()}`);
+            this.filterEffect.setType(this.filter.filterTypeHighPass.value());
+        })
+        this.filter.cutoffFrequency.mouseClicked((e) => {
+            console.log(`Filter - Cutoff Frequency: ${this.filter.cutoffFrequency.value()}`);
+            this.filterEffect.set(this.filter.cutoffFrequency.value(), this.filter.resonance.value());
         });
-        this.lowPassFilter.resonance.mouseClicked((e) => {
-            console.log(`LowPass Filter - Resonance: ${this.lowPassFilter.resonance.value()}`);
-            this.lowPassFilterEffect.set(this.lowPassFilter.cutoffFrequency.value(), this.lowPassFilter.resonance.value());
+        this.filter.resonance.mouseClicked((e) => {
+            console.log(`Filter - Resonance: ${this.filter.resonance.value()}`);
+            this.filterEffect.set(this.filter.cutoffFrequency.value(), this.filter.resonance.value());
         });
-        this.lowPassFilter.dryWet.mouseClicked((e) => {
-            console.log(`LowPass Filter - Dry/Wet: ${this.lowPassFilter.dryWet.value()}`);
-            this.lowPassFilterEffect.drywet(this.lowPassFilter.dryWet.value());
+        this.filter.dryWet.mouseClicked((e) => {
+            console.log(`Filter - Dry/Wet: ${this.filter.dryWet.value()}`);
+            this.filterEffect.drywet(this.filter.dryWet.value());
         });
-        this.lowPassFilter.outputLevel.mouseClicked((e) => {
-            console.log(`LowPass Filter - Output Level: ${this.lowPassFilter.outputLevel.value()}`);
-            this.lowPassFilterEffect.amp(this.lowPassFilter.outputLevel.value());
+        this.filter.outputLevel.mouseClicked((e) => {
+            console.log(`Filter - Output Level: ${this.filter.outputLevel.value()}`);
+            this.filterEffect.amp(this.filter.outputLevel.value());
         });
 
 
@@ -218,20 +229,20 @@ let sketchP5 = function(p){
 
         
 
-        this.lowPassFilterEffect = new p5.LowPass();
-        this.lowPassFilterEffect.process(
+        this.filterEffect = new p5.Filter();
+        this.filterEffect.process(
             this.player,
-            this.lowPassFilter.cutoffFrequency.value(),
-            this.lowPassFilter.resonance.value()
+            this.filter.cutoffFrequency.value(),
+            this.filter.resonance.value()
         );
-        this.lowPassFilterEffect.drywet(this.lowPassFilter.dryWet.value());
-        this.lowPassFilterEffect.amp(this.lowPassFilter.outputLevel.value());
+        this.filterEffect.drywet(this.filter.dryWet.value());
+        this.filterEffect.amp(this.filter.outputLevel.value());
 
 
         //Setting up WaveShaper Distortion
         this.waveshaperDistortionEffect = new p5.Distortion();
         this.waveshaperDistortionEffect.process(
-            this.lowPassFilterEffect,
+            this.filterEffect,
             this.waveshaperDistortion.distortionAmount.value(),
             this.waveshaperDistortion.oversample.value() == 0
                 ? 'none'
@@ -248,7 +259,7 @@ let sketchP5 = function(p){
 
         this.dynamicCompressorEffect = new p5.Compressor();
         this.dynamicCompressorEffect.process(
-            this.lowPassFilterEffect,
+            this.filterEffect,
             this.dynamicCompressor.attack.value(),
             this.dynamicCompressor.knee.value(),
             this.dynamicCompressor.ratio.value(),
@@ -274,7 +285,7 @@ let sketchP5 = function(p){
 
         this.waveshaperDistortionEffect.disconnect();
         this.dynamicCompressorEffect.disconnect();
-        this.lowPassFilterEffect.disconnect();
+        this.filterEffect.disconnect();
         this.reverbEffect.disconnect();
         this.player.disconnect();
 
@@ -282,8 +293,8 @@ let sketchP5 = function(p){
         this.masterVolumeEffect.amp(this.master.volume.value());
 
         //Connect chain
-        this.player.connect(this.lowPassFilterEffect);
-        this.lowPassFilterEffect.connect(this.waveshaperDistortionEffect);
+        this.player.connect(this.filterEffect);
+        this.filterEffect.connect(this.waveshaperDistortionEffect);
         this.waveshaperDistortionEffect.connect(this.dynamicCompressorEffect)
         this.dynamicCompressorEffect.connect(this.reverbEffect)
         this.reverbEffect.connect(this.masterVolumeEffect)

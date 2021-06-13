@@ -43,15 +43,23 @@
         </section>
         <div class="container">
             <div class="row">
-                <section id="lowpassFilter" class="col-4 border rounded">
-                    <header>Low-pass filter</header>
+                <section id="filter" class="col-4 border rounded">
+                    <header>Filter</header>
+                    <div id="lpfFilterType">
+                        <label class="form-label" for="lpfLowPass" >Low-pass</label>
+                        <input type="radio" id="lpfLowPass" name="filterType" value="lowpass" checked>
+                        <label class="form-label" for="lpfBandPass">Band-pass</label>
+                        <input type="radio" id="lpfBandPass" name="filterType" value="bandpass">
+                        <label class="form-label" for="lpfHighPass">High-pass</label>
+                        <input type="radio" id="lpfHighPass" name="filterType" value="highpass">
+                    </div>
                     <div id="lpfCutoffFrequency">
                         <label for="lpfCutoffFrequencySlider" class="form-label">Cutoff Frequency</label>
                         <input type="range" class="form-range" min="10" max="22050" step="50" id="lpfCutoffFrequencySlider">
                     </div>
                     <div>
                         <label for="lpfResonanceFrequency" class="form-label">Resonance</label>
-                        <input type="range" class="form-range" min="0.001" max="100" step="10" value="1" id="lpfResonanceFrequency">
+                        <input type="range" class="form-range" min="0.001" max="10" step="1" value="1" id="lpfResonanceFrequency">
                     </div>
                     <div>
                         <label for="lpfDryWet" class="form-label">Dry/Wet</label>
@@ -59,7 +67,7 @@
                     </div>
                     <div>
                         <label for="lpfOutputLevel" class="form-label">Output Level</label>
-                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="lpfOutputLevel">
+                        <input type="range" class="form-range" min="0" max="50" step="1" value="1" id="lpfOutputLevel">
                     </div>
                 </section>
                 
@@ -111,7 +119,7 @@
                     </div>
                     <div>
                         <label for="dcOutputLevel" class="form-label">Output Level</label>
-                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="dcOutputLevel">
+                        <input type="range" class="form-range" min="0" max="10" step="0.1" value="1" id="dcOutputLevel">
                     </div>
                 </section>
             </div>
@@ -136,7 +144,7 @@
                     </div>
                     <div>
                         <label for="revOutputLevel" class="form-label">Output Level</label>
-                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="revOutputLevel">
+                        <input type="range" class="form-range" min="0" max="10" step="0.1" value="1" id="revOutputLevel">
                     </div>
                 </section>
                 <section id="masterVolume" class="col-3 border rounded">
