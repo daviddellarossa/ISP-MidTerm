@@ -1,8 +1,9 @@
 
+//let sound;
 let sketchP5 = function(p){
 
-    this.song;
-    this.test;
+    this.sound;
+
 
     this.buttons = function(){
         this.play = null;
@@ -50,12 +51,16 @@ let sketchP5 = function(p){
         this.volume = null;
     }
 
-    let volumeSlider;
+    p.preload = function() {
+        p.soundFormats('mp3', 'ogg');
+        this.sound = p.loadSound('./sounds/sound1.mp3', () => {console.log('File loaded')});
+      }
+
+
     p.setup = function() {
 
         // let canvas = p.createCanvas(canvasContainer.size().width, canvasContainer.size().height);
         // canvas.parent("content");
-        song = p.loadSound('./sounds/sound1.mp3');
 
         //binding buttons
         buttons.play = p.select('#playBtn');
@@ -66,13 +71,34 @@ let sketchP5 = function(p){
         buttons.skipToEnd = p.select('#skipToEndBtn')
         buttons.skipToStart = p.select('#skipToStartBtn')
         
-        buttons.play.mouseClicked(play);
-        buttons.stop.mouseClicked(stop);
-        buttons.pause.mouseClicked(pause);
-        buttons.loop.mouseClicked(loop);
+        buttons.play.mouseClicked((e)=>{ 
+            console.log('Play button pressed');
+            if(this.sound.isLoaded() && !this.sound.isPlaying())
+                this.sound.play();
+        });
+
+        buttons.stop.mouseClicked((e) =>{
+            console.log('Stop button pressed');
+            this.sound.stop();
+        });
+
+        buttons.pause.mouseClicked((e) => {
+            console.log('Pause button pressed');
+                this.sound.pause()
+        });
+
+        buttons.loop.mouseClicked((e) => {
+            console.log('Loop button pressed');
+            let isLoopBtnPressed = buttons.loop.elt.ariaPressed === 'true';
+            this.sound.setLoop(isLoopBtnPressed)
+        });
         buttons.record.mouseClicked(record);
-        buttons.skipToEnd.mouseClicked(skipToEnd);
-        buttons.skipToStart.mouseClicked(skipToStart);
+        buttons.skipToEnd.mouseClicked((e) => {
+            this.sound.jump(this.sound.duration() - 1);
+        });
+        buttons.skipToStart.mouseClicked((e) => {
+            this.sound.jump(0);
+        });
 
 
         //binding lowpass filter controls
@@ -155,20 +181,33 @@ let sketchP5 = function(p){
 
 
     //Buttons event handlers
-    function play(){
-        console.log('Play button pressed');
-    }
+    // function play(){
+    //     console.log('Play button pressed');
+    //     this.sound.play();
+    // }
 
-    function stop(){
-        console.log('Stop button pressed');
-    }
+    // function stop(){
+    //     console.log('Stop button pressed');
+    //     this.sound.stop();
+    // }
 
     function loop(){
         console.log('Loop button pressed');
+        let isLoopBtnPressed = buttons.loop.elt.ariaPressed === 'true';
+
+        this.sound.setLoop(isLoopBtnPressed)
+        // if(isLoopBtnPressed){
+        //     console.log('Loop enabled');
+        //     this.sound.setLoop(isLoopBtnPressed)
+        // }
+        // else{
+        //     console.log('Loop disabled');
+        // }
     }
 
     function pause(){
         console.log('Pause button pressed');
+        this.sound.pause();
     }
 
     function skipToStart(){
