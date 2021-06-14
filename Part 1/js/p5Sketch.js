@@ -2,12 +2,9 @@
 //let sound;
 let sketchP5 = function(p){
 
-    // this.player;
-    // this.reverbEffect;
-
     p.preload = function() {
         p.soundFormats('mp3', 'ogg');
-        this.player = p.loadSound('./sounds/kipling.wav', () => {console.log('File loaded')});
+        this.player = p.loadSound('./sounds/sound1.mp3', () => {console.log('File loaded')});
         this.player.disconnect();
       }
 
@@ -17,6 +14,7 @@ let sketchP5 = function(p){
         this.buttons = new ButtonsReferences(p);
         this.filter = new FilterSettings(p);
         this.waveshaperDistortion = new WaveshaperDistortionSettings(p);
+        this.delay = new DelaySettings(p);
         this.dynamicCompressor = new DynamicCompressorSettings(p);
         this.master = new MasterSettings(p);
 
@@ -159,7 +157,43 @@ let sketchP5 = function(p){
             console.log(`Waveshaper Distortion - Volume: ${volume}`);
             this.waveshaperDistortionEffect.amp(volume)
         });
-        
+
+        //binding delay controls
+
+        this.delay.delayTypeDefault.mouseClicked((e) => {
+            console.log(`Delay - Delay Type: ${this.delay.delayTypeDefault.value()}`);
+            this.DelayEffect.setType(this.delay.delayTypeDefault.value());
+        });
+        this.delay.delayTypePingPong.mouseClicked((e) => {
+            console.log(`Delay - Delay Type: ${this.delay.delayTypePingPong.value()}`);
+            this.DelayEffect.setType(this.delay.delayTypePingPong.value());
+        });
+        this.delay.delayTime.mouseClicked((e) => {
+            console.log(`Delay - Time: ${this.delay.delayTime.value()}`);
+            this.delayEffect.delayTime(this.delay.delayTime.value());
+        });
+    
+        this.delay.feedback.mouseClicked((e) => {
+            console.log(`Delay - Feedback: ${this.delay.feedback.value()}`);
+            this.delayEffect.feedback(this.delay.feedback.value());
+        });
+
+        this.delay.lowPass.mouseClicked((e) => {
+            console.log(`Delay - LowPass: ${this.delay.lowPass.value()}`);
+            this.delayEffect.filter(this.delay.lowPass.value());
+        });
+
+        this.delay.dryWet.mouseClicked((e) => {
+            let dryWet = this.delay.dryWet.value();
+            console.log(`Delay - Dry/Wet: ${dryWet}`);
+            this.delayEffect.drywet(dryWet);
+        })
+
+        this.delay.outputLevel.mouseClicked((e) => {
+            let volume = this.delay.outputLevel.value();
+            console.log(`Delay - Volume: ${volume}`);
+            this.delayEffect.amp(volume)
+        })
 
         //binding dynamic compressor controls
 
@@ -296,12 +330,23 @@ let sketchP5 = function(p){
         this.waveshaperDistortionEffect.drywet(this.waveshaperDistortion.dryWet.value());
         this.waveshaperDistortionEffect.amp(this.waveshaperDistortion.outputLevel.value());
 
+        //Setting up Delay
+        this.delayEffect = new p5.Delay()
+        this.delayEffect.process(
+            this.waveshaperDistortionEffect,
+            this.delay.delayTime.value(),
+            this.delay.feedback.value(),
+            this.delay.lowPass.value()
+        );
+
+        this.delayEffect.drywet(this.delay.dryWet.value());
+        this.delayEffect.amp(this.delay.outputLevel.value());
 
         //Setting up Dynamic Compressor
 
         this.dynamicCompressorEffect = new p5.Compressor();
         this.dynamicCompressorEffect.process(
-            this.filterEffect,
+            this.delayEffect,
             this.dynamicCompressor.attack.value(),
             this.dynamicCompressor.knee.value(),
             this.dynamicCompressor.ratio.value(),
@@ -329,6 +374,7 @@ let sketchP5 = function(p){
         this.dynamicCompressorEffect.disconnect();
         this.filterEffect.disconnect();
         this.reverbEffect.disconnect();
+        this.delayEffect.disconnect();
         this.player.disconnect();
 
         this.masterVolumeEffect = new p5.Gain();
@@ -337,9 +383,10 @@ let sketchP5 = function(p){
         //Connect chain
         this.player.connect(this.filterEffect);
         this.filterEffect.connect(this.waveshaperDistortionEffect);
-        this.waveshaperDistortionEffect.connect(this.dynamicCompressorEffect)
-        this.dynamicCompressorEffect.connect(this.reverbEffect)
-        this.reverbEffect.connect(this.masterVolumeEffect)
+        this.waveshaperDistortionEffect.connect(this.delayEffect);
+        this.delayEffect.connect(this.dynamicCompressorEffect);
+        this.dynamicCompressorEffect.connect(this.reverbEffect);
+        this.reverbEffect.connect(this.masterVolumeEffect);
         this.masterVolumeEffect.connect();
 
         this.inputFft = new p5.FFT();

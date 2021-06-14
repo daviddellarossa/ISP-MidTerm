@@ -16,6 +16,7 @@
         <script src="js/MasterSettings.js"></script>
         <script src="js/ReverbSettings.js"></script>
         <script src="js/WaveshaperDistortionSettings.js"></script>
+        <script src="js/DelaySettings.js"></script>
         <script src="js/p5Sketch.js"></script>
         <script src="js/index.js"></script>
         <title>Intelligent Signal Processing Mid-Term assignment - Part 1</title>
@@ -90,6 +91,40 @@
                     </div>
                 </section>
 
+                <section id="delay" class="col-4 border rounded">
+                    <header>Delay</header>
+                    <div id="delDelayType">
+                        <label class="form-label" for="delTypeDefault">Default</label>
+                        <input type="radio" id="delTypeDefault" name="delayType" value="default" checked>
+                        <label class="form-label" for="delTypePingPong" >Ping pong</label>
+                        <input type="radio" id="delTypePingPong" name="delayType" value="pingPong">
+                    </div>
+                    <div>
+                        <label for="delTime" class="form-label">Delay Time</label>
+                        <input type="range" class="form-range" min="0" max="2" step="0.1" value="0" id="delTime">
+                    </div>
+                    <div>
+                        <label for="delFeedback" class="form-label">Feedback</label>
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="0" id="delFeedback">
+                    </div>
+                    <div>
+                        <label for="delLowPass" class="form-label">Low Pass</label>
+                        <input type="range" class="form-range" min="0" max="11025" step="10" value="5000" id="delLowPass">
+                    </div>
+                    <div>
+                        <label for="delDryWet" class="form-label">Dry/Wet</label>
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="0" id="delDryWet">
+                    </div>
+                    <div>
+                        <label for="delOutputLevel" class="form-label">Output Level</label>
+                        <input type="range" class="form-range" min="0" max="1" step="0.01" value="1" id="delOutputLevel">
+                    </div>
+                </section>
+
+
+            </div>
+            <div class="row">
+                <!-- <div class="col-3"></div> -->
                 <section id="dynamicCompressor"  class="col-4 border rounded">
                     <header>Dynamic Compressor</header>
                     <div>
@@ -121,10 +156,7 @@
                         <input type="range" class="form-range" min="0" max="10" step="0.1" value="1" id="dcOutputLevel">
                     </div>
                 </section>
-            </div>
-            <div class="row">
-                <div class="col-3"></div>
-                <section id="reverb" class="col-3 border rounded">
+                <section id="reverb" class="col-4 border rounded">
                     <header>Reverb</header>
                     <div>
                         <label for="revDuration" class="form-label">Duration</label>
@@ -146,14 +178,14 @@
                         <input type="range" class="form-range" min="0" max="10" step="0.1" value="1" id="revOutputLevel">
                     </div>
                 </section>
-                <section id="masterVolume" class="col-3 border rounded">
+                <section id="masterVolume" class="col-4 border rounded">
                     <header>Master</header>
                     <div>
                         <label for="mstVolume" class="form-label">Volume</label>
                         <input type="range" class="form-range" min="0" max="1" step="0.01"  value="1" id="mstVolume">
                     </div>
                 </section>
-                <div class="col-3"></div>
+                <!-- <div class="col-3"></div> -->
                 
             </div>
             <!-- <div class="row">
