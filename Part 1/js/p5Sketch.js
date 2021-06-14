@@ -2,12 +2,12 @@
 //let sound;
 let sketchP5 = function(p){
 
-    this.player;
-    this.reverbEffect;
+    // this.player;
+    // this.reverbEffect;
 
     p.preload = function() {
         p.soundFormats('mp3', 'ogg');
-        this.player = p.loadSound('./sounds/sound1.mp3', () => {console.log('File loaded')});
+        this.player = p.loadSound('./sounds/kipling.wav', () => {console.log('File loaded')});
         this.player.disconnect();
       }
 
@@ -21,7 +21,27 @@ let sketchP5 = function(p){
         this.master = new MasterSettings(p);
 
         // //binding buttons
-        
+        this.buttons.mic.mouseClicked((e) => {
+            p.userStartAudio();
+            console.log('Mic button pressed');
+            let isMicBtnPressed = this.buttons.mic.elt.ariaPressed === 'true';
+            if(isMicBtnPressed){
+                console.log('Microphone on');
+                this.player.disconnect();
+                this.microphone.connect(this.filterEffect);
+                this.inputFft = new p5.FFT();
+                this.inputFft.setInput(this.microphone);
+                
+            }else{
+                console.log('Microphone off');
+                this.microphone.stop();
+                this.microphone.disconnect();
+                this.inputFft = new p5.FFT();
+                this.inputFft.setInput(this.player);
+                this.player.connect(this.filterEffect);
+            }
+        })
+
         this.buttons.play.mouseClicked((e)=>{ 
             console.log('Play button pressed');
             if(this.player.isLoaded() && !this.player.isPlaying())
@@ -45,7 +65,19 @@ let sketchP5 = function(p){
         });
 
         this.buttons.record.mouseClicked((e) => {
-
+            console.log('Record button pressed');
+            let isRecBtnPressed = this.buttons.record.elt.ariaPressed === 'true';
+            if(isRecBtnPressed){
+                //p.userStartAudio();
+                this.recorder.setInput(this.masterVolumeEffect);
+                this.recorder.record(this.soundFile);
+                console.log('Recording');
+                
+            }else{
+                this.recorder.stop();
+                p.save(this.soundFile, 'audiofile.wav');
+                console.log('Stop Recording');
+            }
         });
 
         this.buttons.skipToEnd.mouseClicked((e) => {
@@ -225,9 +257,19 @@ let sketchP5 = function(p){
             this.masterVolumeEffect.amp(this.master.volume.value());
         });
 
-        //Setting up LowPass Filter
 
-        
+        //Setting up Microphone
+
+        this.microphone = new p5.AudioIn((e) => {
+            console.log(`Error accessing the microphone: ${e}`)
+        });
+        this.microphone.start();
+
+        //Setting up SoundRecorder
+        this.recorder = new p5.SoundRecorder();
+        this.soundFile = new p5.SoundFile();
+
+        //Setting up LowPass Filter
 
         this.filterEffect = new p5.Filter();
         this.filterEffect.process(
@@ -304,21 +346,15 @@ let sketchP5 = function(p){
         this.inputFft.setInput(this.player);
 
         this.outputFft = new p5.FFT()
-        //this.inputFft.setInput(this.masterVolumeEffect);
 
         let canvasContainer = p.select('#spectrumCanvas');
         this.canvasIn = p.createCanvas(canvasContainer.width, canvasContainer.width / 4);
         this.canvasIn.background(200)
         this.canvasIn.parent('spectrumCanvas');
-
-        // this.canvasOut = p.createCanvas(200, 200);
-        // this.canvasOut.background(0, 100, 0);
-        // this.canvasOut.parent('spectrumOutCanvas');
     
     }
 
     p.draw = function() {
-        //let canvasContainer = p.select('#spectrumCanvas');
         this.canvasIn.background(255)
         let spectrumIn = this.inputFft.analyze();
         let spectrumOut = this.outputFft.analyze();

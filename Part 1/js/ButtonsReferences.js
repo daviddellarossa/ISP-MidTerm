@@ -1,5 +1,6 @@
 class ButtonsReferences {
     constructor(p) {
+        this.mic = p.select('#micBtn');
         this.play = p.select('#playBtn');
         this.stop = p.select('#stopBtn');
         this.pause = p.select('#pauseBtn');
