@@ -8,8 +8,10 @@
         <link rel="stylesheet" href="css/stylesheet.css">
         <script src="node_modules/jquery/dist/jquery.js"></script>
         <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="js/p5js/1.3.1/p5.js"></script>
-        <script src="js/p5js//1.3.1/p5.sound.js"></script>
+        <!-- <script src="js/p5js/1.3.1/p5.js"></script> -->
+        <!-- <script src="js/p5js//1.3.1/p5.sound.js"></script> -->
+        <script src="node_modules/p5/lib/p5.js"></script>
+        <script src="node_modules/p5/lib/addons/p5.sound.js"></script>
         <script src="js/ButtonsReferences.js"></script>
         <script src="js/DynamicCompressorSettings.js"></script>
         <script src="js/LowPassFilterSettings.js"></script>
@@ -43,7 +45,7 @@
         </section>
         <div class="container">
             <div class="row">
-                <section id="filter" class="col-4 border rounded">
+                <section id="_filter" class="col-4 border rounded">
                     <header>Filter</header>
                     <div id="lpfFilterType">
                         <label class="form-label" for="lpfLowPass" >Low-pass</label>
@@ -101,7 +103,7 @@
                     </div>
                     <div>
                         <label for="delTime" class="form-label">Delay Time</label>
-                        <input type="range" class="form-range" min="0" max="2" step="0.1" value="0" id="delTime">
+                        <input type="range" class="form-range" min="0" max="1" step="0.1" value="0" id="delTime">
                     </div>
                     <div>
                         <label for="delFeedback" class="form-label">Feedback</label>
@@ -178,7 +180,7 @@
                         <input type="range" class="form-range" min="0" max="10" step="0.1" value="1" id="revOutputLevel">
                     </div>
                 </section>
-                <section id="masterVolume" class="col-4 border rounded">
+                <section id="mastVolume" class="col-4 border rounded">
                     <header>Master</header>
                     <div>
                         <label for="mstVolume" class="form-label">Volume</label>

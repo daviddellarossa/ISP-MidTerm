@@ -1,419 +1,448 @@
+let canvas;
+let recorder;
+let soundFile;
+let player;
+let microphone;
+
+//Effects Settings
+let reverbSettings;
+let buttonsSettings;
+let filterSettings;
+let waveshaperDistortionSettings;
+let delaySettings;
+let dynamicCompressorSettings;
+let masterSettings;
+
+//Effects
+let reverbEffect;
+let buttonsEffect;
+let filterEffect;
+let waveshaperDistortionEffect;
+let delayEffect;
+let dynamicCompressorEffect;
+let masterEffect;
+
+//FFT
+let inputFft;
+let outputFft;
+
 
 function preload() {
-    soundFormats('mp3', 'ogg');
-    this.player = loadSound('./sounds/sound1.mp3', () => {console.log('File loaded')});
-    this.player.disconnect();
+    player = loadSound('./sounds/sound1.mp3', () => {console.log('File loaded')});
+    player.disconnect();      
     }
 
 
 function setup(){
-    this.reverb = new ReverbSettings();
-    this.buttons = new ButtonsReferences();
-    this.filter = new FilterSettings();
-    this.waveshaperDistortion = new WaveshaperDistortionSettings();
-    this.delay = new DelaySettings();
-    this.dynamicCompressor = new DynamicCompressorSettings();
-    this.master = new MasterSettings();
+    reverbSettings = new ReverbSettings();
+    buttonsSettings = new ButtonsReferences();
+    filterSettings = new FilterSettings();
+    waveshaperDistortionSettings = new WaveshaperDistortionSettings();
+    delaySettings = new DelaySettings();
+    dynamicCompressorSettings = new DynamicCompressorSettings();
+    masterSettings = new MasterSettings();
 
     // //binding buttons
-    this.buttons.mic.mouseClicked((e) => {
-        userStartAudio();
+    buttonsSettings.mic.mouseClicked((e) => {
         console.log('Mic button pressed');
-        let isMicBtnPressed = this.buttons.mic.elt.ariaPressed === 'true';
+        let isMicBtnPressed = buttonsSettings.mic.elt.ariaPressed === 'true';
         if(isMicBtnPressed){
             console.log('Microphone on');
-            this.player.disconnect();
-            this.microphone.connect(this.filterEffect);
-            this.inputFft = new p5.FFT();
-            this.inputFft.setInput(this.microphone);
+            player.disconnect();
+            microphone.connect(filterEffect);
+            inputFft = new p5.FFT();
+            inputFft.setInput(microphone);
             
         }else{
             console.log('Microphone off');
-            this.microphone.stop();
-            this.microphone.disconnect();
-            this.inputFft = new p5.FFT();
-            this.inputFft.setInput(this.player);
-            this.player.connect(this.filterEffect);
+            microphone.stop();
+            microphone.disconnect();
+            inputFft = new p5.FFT();
+            inputFft.setInput(player);
+            player.connect(filterEffect);
         }
     })
 
-    this.buttons.play.mouseClicked((e)=>{ 
+    buttonsSettings.play.mouseClicked((e)=>{ 
         console.log('Play button pressed');
-        userStartAudio();
-        if(this.player.isLoaded() && !this.player.isPlaying())
-            this.player.play();
+        if(player.isLoaded() && !player.isPlaying())
+            player.play();
     });
 
-    this.buttons.stop.mouseClicked((e) =>{
+    buttonsSettings.stop.mouseClicked((e) =>{
         console.log('Stop button pressed');
-        this.player.stop();
+        player.stop();
     });
 
-    this.buttons.pause.mouseClicked((e) => {
+    buttonsSettings.pause.mouseClicked((e) => {
         console.log('Pause button pressed');
-            this.player.pause();
+            player.pause();
     });
 
-    this.buttons.loop.mouseClicked((e) => {
+    buttonsSettings.loop.mouseClicked((e) => {
         console.log('Loop button pressed');
-        let isLoopBtnPressed = this.buttons.looelt.ariaPressed === 'true';
-        this.player.setLoop(isLoopBtnPressed);
+        let isLoopBtnPressed = buttonsSettings.looelt.ariaPressed === 'true';
+        player.setLoop(isLoopBtnPressed);
     });
 
-    this.buttons.record.mouseClicked((e) => {
+    buttonsSettings.record.mouseClicked((e) => {
         console.log('Record button pressed');
-        let isRecBtnPressed = this.buttons.record.elt.ariaPressed === 'true';
+        let isRecBtnPressed = buttonsSettings.record.elt.ariaPressed === 'true';
         if(isRecBtnPressed){
-            userStartAudio();
-            this.recorder.setInput(this.masterVolumeEffect);
-            this.recorder.record(this.soundFile);
-            console.log('Recording');
+            if(player.enabled || microphone.enabled){
+                recorder.record(soundFile);
+                console.log('Recording');
+            }
+            else{
+                buttonsSettings.record.elt.ariaPressed = 'false';
+            }
             
         }else{
-            this.recorder.stop();
-            save(this.soundFile, 'audiofile.wav');
+            recorder.stop();
+            save(soundFile, 'audiofile.wav');
             console.log('Stop Recording');
         }
     });
 
-    this.buttons.skipToEnd.mouseClicked((e) => {
-        this.player.jump(this.player.duration() - 1);
+    buttonsSettings.skipToEnd.mouseClicked((e) => {
+        player.jump(player.duration() - 1);
     });
 
-    this.buttons.skipToStart.mouseClicked((e) => {
-        this.player.jump(0);
+    buttonsSettings.skipToStart.mouseClicked((e) => {
+        player.jump(0);
     });
 
 
     //binding lowpass filter controls
-    this.filter.filterTypeLowPass.mouseClicked((e) => {
-        console.log(`Filter - Filter Type: ${this.filter.filterTypeLowPass.value()}`);
-        this.filterEffect.setType(this.filter.filterTypeLowPass.value());
+    filterSettings.filterTypeLowPass.mouseClicked((e) => {
+        console.log(`Filter - Filter Type: ${filterSettings.filterTypeLowPass.value()}`);
+        filterEffect.setType(filterSettings.filterTypeLowPass.value());
     })
-    this.filter.filterTypeBandPass.mouseClicked((e) => {
-        console.log(`Filter - Filter Type: ${this.filter.filterTypeBandPass.value()}`);
-        this.filterEffect.setType(this.filter.filterTypeBandPass.value());
+    filterSettings.filterTypeBandPass.mouseClicked((e) => {
+        console.log(`Filter - Filter Type: ${filterSettings.filterTypeBandPass.value()}`);
+        filterEffect.setType(filterSettings.filterTypeBandPass.value());
     })
-    this.filter.filterTypeHighPass.mouseClicked((e) => {
-        console.log(`Filter - Filter Type: ${this.filter.filterTypeHighPass.value()}`);
-        this.filterEffect.setType(this.filter.filterTypeHighPass.value());
+    filterSettings.filterTypeHighPass.mouseClicked((e) => {
+        console.log(`Filter - Filter Type: ${filterSettings.filterTypeHighPass.value()}`);
+        filterEffect.setType(filterSettings.filterTypeHighPass.value());
     })
-    this.filter.cutoffFrequency.mouseClicked((e) => {
-        console.log(`Filter - Cutoff Frequency: ${this.filter.cutoffFrequency.value()}`);
-        this.filterEffect.set(this.filter.cutoffFrequency.value(), this.filter.resonance.value());
+    filterSettings.cutoffFrequency.mouseClicked((e) => {
+        console.log(`Filter - Cutoff Frequency: ${filterSettings.cutoffFrequency.value()}`);
+        filterEffect.set(filterSettings.cutoffFrequency.value(), filterSettings.resonance.value());
     });
-    this.filter.resonance.mouseClicked((e) => {
-        console.log(`Filter - Resonance: ${this.filter.resonance.value()}`);
-        this.filterEffect.set(this.filter.cutoffFrequency.value(), this.filter.resonance.value());
+    filterSettings.resonance.mouseClicked((e) => {
+        console.log(`Filter - Resonance: ${filterSettings.resonance.value()}`);
+        filterEffect.set(filterSettings.cutoffFrequency.value(), filterSettings.resonance.value());
     });
-    this.filter.dryWet.mouseClicked((e) => {
-        console.log(`Filter - Dry/Wet: ${this.filter.dryWet.value()}`);
-        this.filterEffect.drywet(this.filter.dryWet.value());
+    filterSettings.dryWet.mouseClicked((e) => {
+        console.log(`Filter - Dry/Wet: ${filterSettings.dryWet.value()}`);
+        filterEffect.drywet(filterSettings.dryWet.value());
     });
-    this.filter.outputLevel.mouseClicked((e) => {
-        console.log(`Filter - Output Level: ${this.filter.outputLevel.value()}`);
-        this.filterEffect.amp(this.filter.outputLevel.value());
+    filterSettings.outputLevel.mouseClicked((e) => {
+        console.log(`Filter - Output Level: ${filterSettings.outputLevel.value()}`);
+        filterEffect.amp(filterSettings.outputLevel.value());
     });
 
 
     //binding waveshaper distortion controls
 
-    this.waveshaperDistortion.distortionAmount.mouseClicked((e) => {
-        var oversample = this.waveshaperDistortion.oversample.value() == 0
+    waveshaperDistortionSettings.distortionAmount.mouseClicked((e) => {
+        var oversample = waveshaperDistortionSettings.oversample.value() == 0
         ? 'none'
-        : this.waveshaperDistortion.oversample.value() == 1
+        : waveshaperDistortionSettings.oversample.value() == 1
             ? '2x'
             : '4x';
-            console.log(`Waveshaper Distortion - Distortion Amount: ${this.waveshaperDistortion.distortionAmount.value()}`);
-        this.waveshaperDistortionEffect.set(
-            this.waveshaperDistortion.distortionAmount.value(),
+            console.log(`Waveshaper Distortion - Distortion Amount: ${waveshaperDistortionSettings.distortionAmount.value()}`);
+        waveshaperDistortionEffect.set(
+            waveshaperDistortionSettings.distortionAmount.value(),
             oversample
         );
     });
 
-    this.waveshaperDistortion.oversample.mouseClicked((e) => {
-        var oversample = this.waveshaperDistortion.oversample.value() == 0
+    waveshaperDistortionSettings.oversample.mouseClicked((e) => {
+        var oversample = waveshaperDistortionSettings.oversample.value() == 0
         ? 'none'
-        : this.waveshaperDistortion.oversample.value() == 1
+        : waveshaperDistortionSettings.oversample.value() == 1
             ? '2x'
             : '4x';
         console.log(`Waveshaper Distortion - Oversample: ${oversample}`);
-        this.waveshaperDistortionEffect.set(
-            this.waveshaperDistortion.distortionAmount.value(),
+        waveshaperDistortionEffect.set(
+            waveshaperDistortionSettings.distortionAmount.value(),
             oversample
         );
     });
 
-    this.waveshaperDistortion.dryWet.mouseClicked((e) => {
-        let dryWet = this.waveshaperDistortion.dryWet.value();
+    waveshaperDistortionSettings.dryWet.mouseClicked((e) => {
+        let dryWet = waveshaperDistortionSettings.dryWet.value();
         console.log(`Waveshaper Distortion - Dry/Wet: ${dryWet}`);
-        this.waveshaperDistortionEffect.drywet(dryWet);
+        waveshaperDistortionEffect.drywet(dryWet);
     });
 
-    this.waveshaperDistortion.outputLevel.mouseClicked((e) => {
-        let volume = this.waveshaperDistortion.outputLevel.value();
+    waveshaperDistortionSettings.outputLevel.mouseClicked((e) => {
+        let volume = waveshaperDistortionSettings.outputLevel.value();
         console.log(`Waveshaper Distortion - Volume: ${volume}`);
-        this.waveshaperDistortionEffect.amp(volume)
+        waveshaperDistortionEffect.amp(volume)
     });
 
     //binding delay controls
 
-    this.delay.delayTypeDefault.mouseClicked((e) => {
-        console.log(`Delay - Delay Type: ${this.delay.delayTypeDefault.value()}`);
-        this.DelayEffect.setType(this.delay.delayTypeDefault.value());
+    delaySettings.delayTypeDefault.mouseClicked((e) => {
+        console.log(`Delay - Delay Type: ${delaySettings.delayTypeDefault.value()}`);
+        delayEffect.setType(delaySettings.delayTypeDefault.value());
     });
-    this.delay.delayTypePingPong.mouseClicked((e) => {
-        console.log(`Delay - Delay Type: ${this.delay.delayTypePingPong.value()}`);
-        this.DelayEffect.setType(this.delay.delayTypePingPong.value());
+    delaySettings.delayTypePingPong.mouseClicked((e) => {
+        console.log(`Delay - Delay Type: ${delaySettings.delayTypePingPong.value()}`);
+        delayEffect.setType(delaySettings.delayTypePingPong.value());
     });
-    this.delay.delayTime.mouseClicked((e) => {
-        console.log(`Delay - Time: ${this.delay.delayTime.value()}`);
-        this.delayEffect.delayTime(this.delay.delayTime.value());
-    });
-
-    this.delay.feedback.mouseClicked((e) => {
-        console.log(`Delay - Feedback: ${this.delay.feedback.value()}`);
-        this.delayEffect.feedback(this.delay.feedback.value());
+    delaySettings.delayTime.mouseClicked((e) => {
+        console.log(`Delay - Time: ${delaySettings.delayTime.value()}`);
+        delayEffect.delayTime(delaySettings.delayTime.value());
     });
 
-    this.delay.lowPass.mouseClicked((e) => {
-        console.log(`Delay - LowPass: ${this.delay.lowPass.value()}`);
-        this.delayEffect.filter(this.delay.lowPass.value());
+    delaySettings.feedback.mouseClicked((e) => {
+        console.log(`Delay - Feedback: ${delaySettings.feedback.value()}`);
+        delayEffect.feedback(delaySettings.feedback.value());
     });
 
-    this.delay.dryWet.mouseClicked((e) => {
-        let dryWet = this.delay.dryWet.value();
+    delaySettings.lowPass.mouseClicked((e) => {
+        console.log(`Delay - LowPass: ${delaySettings.lowPass.value()}`);
+        delayEffect.filter(delaySettings.lowPass.value());
+    });
+
+    delaySettings.dryWet.mouseClicked((e) => {
+        let dryWet = delaySettings.dryWet.value();
         console.log(`Delay - Dry/Wet: ${dryWet}`);
-        this.delayEffect.drywet(dryWet);
+        delayEffect.drywet(dryWet);
     })
 
-    this.delay.outputLevel.mouseClicked((e) => {
-        let volume = this.delay.outputLevel.value();
+    delaySettings.outputLevel.mouseClicked((e) => {
+        let volume = delaySettings.outputLevel.value();
         console.log(`Delay - Volume: ${volume}`);
-        this.delayEffect.amp(volume)
+        delayEffect.amp(volume)
     })
 
     //binding dynamic compressor controls
 
-    this.dynamicCompressor.attack.mouseClicked((e) => {
-        console.log(`Dynamic Compression - Attack: ${this.dynamicCompressor.attack.value()}`);
-        this.dynamicCompressorEffect.set(
-            this.dynamicCompressor.attack.value(),
-            this.dynamicCompressor.knee.value(),
-            this.dynamicCompressor.ratio.value(),
-            this.dynamicCompressor.threshold.value(),
-            this.dynamicCompressor.release.value()
+    dynamicCompressorSettings.attack.mouseClicked((e) => {
+        console.log(`Dynamic Compression - Attack: ${dynamicCompressorSettings.attack.value()}`);
+        dynamicCompressorEffect.set(
+            dynamicCompressorSettings.attack.value(),
+            dynamicCompressorSettings.knee.value(),
+            dynamicCompressorSettings.ratio.value(),
+            dynamicCompressorSettings.threshold.value(),
+            dynamicCompressorSettings.release.value()
         );
     });
-    this.dynamicCompressor.knee.mouseClicked((e) => {
-        console.log(`Dynamic Compression - Knee: ${this.dynamicCompressor.knee.value()}`);
-        this.dynamicCompressorEffect.set(
-            this.dynamicCompressor.attack.value(),
-            this.dynamicCompressor.knee.value(),
-            this.dynamicCompressor.ratio.value(),
-            this.dynamicCompressor.threshold.value(),
-            this.dynamicCompressor.release.value()
+    dynamicCompressorSettings.knee.mouseClicked((e) => {
+        console.log(`Dynamic Compression - Knee: ${dynamicCompressorSettings.knee.value()}`);
+        dynamicCompressorEffect.set(
+            dynamicCompressorSettings.attack.value(),
+            dynamicCompressorSettings.knee.value(),
+            dynamicCompressorSettings.ratio.value(),
+            dynamicCompressorSettings.threshold.value(),
+            dynamicCompressorSettings.release.value()
         );
     });
-    this.dynamicCompressor.release.mouseClicked((e) => {
-        console.log(`Dynamic Compression - Release: ${this.dynamicCompressor.release.value()}`);
-        this.dynamicCompressorEffect.set(
-            this.dynamicCompressor.attack.value(),
-            this.dynamicCompressor.knee.value(),
-            this.dynamicCompressor.ratio.value(),
-            this.dynamicCompressor.threshold.value(),
-            this.dynamicCompressor.release.value()
+    dynamicCompressorSettings.release.mouseClicked((e) => {
+        console.log(`Dynamic Compression - Release: ${dynamicCompressorSettings.release.value()}`);
+        dynamicCompressorEffect.set(
+            dynamicCompressorSettings.attack.value(),
+            dynamicCompressorSettings.knee.value(),
+            dynamicCompressorSettings.ratio.value(),
+            dynamicCompressorSettings.threshold.value(),
+            dynamicCompressorSettings.release.value()
         );
     });
-    this.dynamicCompressor.ratio.mouseClicked((e) => {
-        console.log(`Dynamic Compression - Ratio: ${this.dynamicCompressor.ratio.value()}`);
-        this.dynamicCompressorEffect.set(
-            this.dynamicCompressor.attack.value(),
-            this.dynamicCompressor.knee.value(),
-            this.dynamicCompressor.ratio.value(),
-            this.dynamicCompressor.threshold.value(),
-            this.dynamicCompressor.release.value()
+    dynamicCompressorSettings.ratio.mouseClicked((e) => {
+        console.log(`Dynamic Compression - Ratio: ${dynamicCompressorSettings.ratio.value()}`);
+        dynamicCompressorEffect.set(
+            dynamicCompressorSettings.attack.value(),
+            dynamicCompressorSettings.knee.value(),
+            dynamicCompressorSettings.ratio.value(),
+            dynamicCompressorSettings.threshold.value(),
+            dynamicCompressorSettings.release.value()
         );
     });
-    this.dynamicCompressor.threshold.mouseClicked((e) => {
-        console.log(`Dynamic Compression - Threshold: ${this.dynamicCompressor.threshold.value()}`);
-        this.dynamicCompressorEffect.set(
-            this.dynamicCompressor.attack.value(),
-            this.dynamicCompressor.knee.value(),
-            this.dynamicCompressor.ratio.value(),
-            this.dynamicCompressor.threshold.value(),
-            this.dynamicCompressor.release.value()
+    dynamicCompressorSettings.threshold.mouseClicked((e) => {
+        console.log(`Dynamic Compression - Threshold: ${dynamicCompressorSettings.threshold.value()}`);
+        dynamicCompressorEffect.set(
+            dynamicCompressorSettings.attack.value(),
+            dynamicCompressorSettings.knee.value(),
+            dynamicCompressorSettings.ratio.value(),
+            dynamicCompressorSettings.threshold.value(),
+            dynamicCompressorSettings.release.value()
         );
     });
-    this.dynamicCompressor.dryWet.mouseClicked((e) => {
-        let dryWet = this.dynamicCompressor.dryWet.value();
+    dynamicCompressorSettings.dryWet.mouseClicked((e) => {
+        let dryWet = dynamicCompressorSettings.dryWet.value();
         console.log(`Dynamic Compression - Dry/Wet: ${dryWet}`);
-        this.dynamicCompressorEffect.drywet(dryWet);
+        dynamicCompressorEffect.drywet(dryWet);
     });
-    this.dynamicCompressor.outputLevel.mouseClicked((e) => {
-        let outputLevel = this.dynamicCompressor.outputLevel.value();
+    dynamicCompressorSettings.outputLevel.mouseClicked((e) => {
+        let outputLevel = dynamicCompressorSettings.outputLevel.value();
         console.log(`Dynamic Compression - Output Level: ${outputLevel}`);
-        this.dynamicCompressorEffect.amp(outputLevel);
+        dynamicCompressorEffect.amp(outputLevel);
     });
     
 
     //binding reverb controls
 
-    this.reverb.duration.mouseClicked((e) => {
-        console.log(`Reverb - Duration: ${this.reverb.duration.value()}`);
-        this.reverbEffect.set(this.reverb.duration.value(), this.reverb.decayRate.value(), this.reverb.reverse.value());
+    reverbSettings.duration.mouseClicked((e) => {
+        console.log(`Reverb - Duration: ${reverbSettings.duration.value()}`);
+        reverbEffect.set(reverbSettings.duration.value(), reverbSettings.decayRate.value(), reverbSettings.reverse.value());
     });
-    this.reverb.decayRate.mouseClicked((e) => {
-        console.log(`Reverb - Decay Rate: ${this.reverb.decayRate.value()}`);
-        this.reverbEffect.set(this.reverb.duration.value(), this.reverb.decayRate.value(), this.reverb.reverse.value());
+    reverbSettings.decayRate.mouseClicked((e) => {
+        console.log(`Reverb - Decay Rate: ${reverbSettings.decayRate.value()}`);
+        reverbEffect.set(reverbSettings.duration.value(), reverbSettings.decayRate.value(), reverbSettings.reverse.value());
     });
-    this.reverb.reverse.mouseClicked((e) => {
-        console.log(`Reverb - Reverse: ${this.reverb.reverse.value()}`);
-        this.reverbEffect.set(this.reverb.duration.value(), this.reverb.decayRate.value(), this.reverb.reverse.value());
+    reverbSettings.reverse.mouseClicked((e) => {
+        console.log(`Reverb - Reverse: ${reverbSettings.reverse.value()}`);
+        reverbEffect.set(reverbSettings.duration.value(), reverbSettings.decayRate.value(), reverbSettings.reverse.value());
     });
-    this.reverb.dryWet.mouseClicked(() =>{
-        let dryWet = this.reverb.dryWet.value();
+    reverbSettings.dryWet.mouseClicked(() =>{
+        let dryWet = reverbSettings.dryWet.value();
         console.log(`Reverb - Dry/Wet: ${dryWet}`);
-        this.reverbEffect.drywet(dryWet);
+        reverbEffect.drywet(dryWet);
     });
-    this.reverb.outputLevel.mouseClicked((e) => {
-        let volume = this.reverb.outputLevel.value();
+    reverbSettings.outputLevel.mouseClicked((e) => {
+        let volume = reverbSettings.outputLevel.value();
         console.log(`Reverb - Volume: ${volume}`);
-        this.reverbEffect.amp(volume)
+        reverbEffect.amp(volume)
     });
     
     //binding master controls
 
-    this.master.volume.mouseClicked((e) => {
-        console.log(`Gain - Volume: ${this.master.volume.value()}`);
-        this.masterVolumeEffect.amp(this.master.volume.value());
+    masterSettings.volume.mouseClicked((e) => {
+        console.log(`Gain - Volume: ${masterSettings.volume.value()}`);
+        masterVolumeEffect.amp(masterSettings.volume.value());
     });
 
 
     //Setting up Microphone
 
-    this.microphone = new p5.AudioIn((e) => {
+    microphone = new p5.AudioIn((e) => {
         console.log(`Error accessing the microphone: ${e}`)
     });
-    this.microphone.start();
+    microphone.start();
 
     //Setting up SoundRecorder
-    this.recorder = new p5.SoundRecorder();
-    this.soundFile = new p5.SoundFile();
-
+    recorder = new p5.SoundRecorder();
+    soundFile = new p5.SoundFile();
+    
+    
     //Setting up LowPass Filter
 
-    this.filterEffect = new p5.Filter();
-    this.filterEffect.process(
-        this.player,
-        this.filter.cutoffFrequency.value(),
-        this.filter.resonance.value()
+    filterEffect = new p5.Filter();
+    filterEffect.process(
+        player,
+        filterSettings.cutoffFrequency.value(),
+        filterSettings.resonance.value()
     );
-    this.filterEffect.drywet(this.filter.dryWet.value());
-    this.filterEffect.amp(this.filter.outputLevel.value());
+    filterEffect.drywet(filterSettings.dryWet.value());
+    filterEffect.amp(filterSettings.outputLevel.value());
 
 
     //Setting up WaveShaper Distortion
-    this.waveshaperDistortionEffect = new p5.Distortion();
-    this.waveshaperDistortionEffect.process(
-        this.filterEffect,
-        this.waveshaperDistortion.distortionAmount.value(),
-        this.waveshaperDistortion.oversample.value() == 0
+    waveshaperDistortionEffect = new p5.Distortion();
+    waveshaperDistortionEffect.process(
+        filterEffect,
+        waveshaperDistortionSettings.distortionAmount.value(),
+        waveshaperDistortionSettings.oversample.value() == 0
             ? 'none'
-            : this.waveshaperDistortion.oversample.value() == 1
+            : waveshaperDistortionSettings.oversample.value() == 1
                 ? '2x'
                 : '4x'
     );
             
-    this.waveshaperDistortionEffect.drywet(this.waveshaperDistortion.dryWet.value());
-    this.waveshaperDistortionEffect.amp(this.waveshaperDistortion.outputLevel.value());
+    waveshaperDistortionEffect.drywet(waveshaperDistortionSettings.dryWet.value());
+    waveshaperDistortionEffect.amp(waveshaperDistortionSettings.outputLevel.value());
 
     //Setting up Delay
-    this.delayEffect = new p5.Delay()
-    this.delayEffect.process(
-        this.waveshaperDistortionEffect,
-        this.delay.delayTime.value(),
-        this.delay.feedback.value(),
-        this.delay.lowPass.value()
+    delayEffect = new p5.Delay()
+    delayEffect.process(
+        waveshaperDistortionEffect,
+        delaySettings.delayTime.value(),
+        delaySettings.feedback.value(),
+        delaySettings.lowPass.value()
     );
 
-    this.delayEffect.drywet(this.delay.dryWet.value());
-    this.delayEffect.amp(this.delay.outputLevel.value());
+    delayEffect.drywet(delaySettings.dryWet.value());
+    delayEffect.amp(delaySettings.outputLevel.value());
 
     //Setting up Dynamic Compressor
 
-    this.dynamicCompressorEffect = new p5.Compressor();
-    this.dynamicCompressorEffect.process(
-        this.delayEffect,
-        this.dynamicCompressor.attack.value(),
-        this.dynamicCompressor.knee.value(),
-        this.dynamicCompressor.ratio.value(),
-        this.dynamicCompressor.threshold.value(),
-        this.dynamicCompressor.release.value()
+    dynamicCompressorEffect = new p5.Compressor();
+    dynamicCompressorEffect.process(
+        delayEffect,
+        dynamicCompressorSettings.attack.value(),
+        dynamicCompressorSettings.knee.value(),
+        dynamicCompressorSettings.ratio.value(),
+        dynamicCompressorSettings.threshold.value(),
+        dynamicCompressorSettings.release.value()
     );
 
-    this.dynamicCompressorEffect.drywet(this.dynamicCompressor.dryWet.value());
-    this.dynamicCompressorEffect.amp(this.dynamicCompressor.outputLevel.value());
+    dynamicCompressorEffect.drywet(dynamicCompressorSettings.dryWet.value());
+    dynamicCompressorEffect.amp(dynamicCompressorSettings.outputLevel.value());
 
     //Setting up Reverb Effect
-    this.reverbEffect = new p5.Reverb();
-    this.reverbEffect.process(
-        this.dynamicCompressorEffect, 
-        this.reverb.duration.value(), 
-        this.reverb.decayRate.value(), 
-        this.reverb.reverse.value()
+    reverbEffect = new p5.Reverb();
+    reverbEffect.process(
+        dynamicCompressorEffect, 
+        reverbSettings.duration.value(), 
+        reverbSettings.decayRate.value(), 
+        reverbSettings.reverse.value()
     );
     
-    this.reverbEffect.drywet(this.reverb.dryWet.value());
-    this.reverbEffect.amp(this.reverb.outputLevel.value());
+    reverbEffect.drywet(reverbSettings.dryWet.value());
+    reverbEffect.amp(reverbSettings.outputLevel.value());
 
 
-    this.waveshaperDistortionEffect.disconnect();
-    this.dynamicCompressorEffect.disconnect();
-    this.filterEffect.disconnect();
-    this.reverbEffect.disconnect();
-    this.delayEffect.disconnect();
-    this.player.disconnect();
+    waveshaperDistortionEffect.disconnect();
+    dynamicCompressorEffect.disconnect();
+    filterEffect.disconnect();
+    reverbEffect.disconnect();
+    delayEffect.disconnect();
+    player.disconnect();
 
-    this.masterVolumeEffect = new p5.Gain();
-    this.masterVolumeEffect.amp(this.master.volume.value());
+    masterVolumeEffect = new p5.Gain();
+    masterVolumeEffect.amp(masterSettings.volume.value());
 
     //Connect chain
-    this.player.connect(this.filterEffect);
-    this.filterEffect.connect(this.waveshaperDistortionEffect);
-    this.waveshaperDistortionEffect.connect(this.delayEffect);
-    this.delayEffect.connect(this.dynamicCompressorEffect);
-    this.dynamicCompressorEffect.connect(this.reverbEffect);
-    this.reverbEffect.connect(this.masterVolumeEffect);
-    this.masterVolumeEffect.connect();
+    player.connect(filterEffect);
+    filterEffect.connect(waveshaperDistortionEffect);
+    waveshaperDistortionEffect.connect(delayEffect);
+    delayEffect.connect(dynamicCompressorEffect);
+    dynamicCompressorEffect.connect(reverbEffect);
+    reverbEffect.connect(masterVolumeEffect);
+    masterVolumeEffect.connect();
 
-    this.inputFft = new p5.FFT();
-    this.inputFft.setInput(this.player);
+    inputFft = new p5.FFT();
+    inputFft.setInput(player);
 
-    this.outputFft = new p5.FFT()
+    outputFft = new p5.FFT()
 
     let canvasContainer = select('#spectrumCanvas');
-    this.canvasIn = createCanvas(canvasContainer.width, canvasContainer.width / 4);
-    this.canvasIn.background(200)
-    this.canvasIn.parent('spectrumCanvas');
+    canvas = createCanvas(canvasContainer.width, canvasContainer.width / 4);
+    canvas.background(200)
+    canvas.parent('spectrumCanvas');
 }
 
 function draw() {
-    this.canvasIn.background(255)
-    let spectrumIn = this.inputFft.analyze();
-    let spectrumOut = this.outputFft.analyze();
+    canvas.background(255)
+    let spectrumIn = inputFft.analyze();
+    let spectrumOut = outputFft.analyze();
     
     beginShape();
     
     for (i = 0; i < spectrumIn.length; i++) {
-        var x = map(i, 0, spectrumIn.length, 0, this.canvasIn.width / 2);
-        vertex(x, map(spectrumIn[i], 0, 255, this.canvasIn.height * 0.9, 0));
+        var x = map(i, 0, spectrumIn.length, 0, canvas.width / 2);
+        vertex(x, map(spectrumIn[i], 0, 255, canvas.height * 0.9, 0));
     }
 
     
     for (i = 0; i < spectrumOut.length; i++) {
-        var x = map(i, 0, spectrumOut.length, this.canvasIn.width / 2, this.canvasIn.width);
-        vertex(x, map(spectrumOut[i], 0, 255, this.canvasIn.height * 0.9, 0));
+        var x = map(i, 0, spectrumOut.length, canvas.width / 2, canvas.width);
+        vertex(x, map(spectrumOut[i], 0, 255, canvas.height * 0.9, 0));
     }
     endShape();
 
