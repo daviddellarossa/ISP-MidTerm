@@ -1,5 +1,5 @@
 class MasterSettings {
     constructor(p) {
-        this.volume = p.select('#mstVolume');
+        this.volume = select('#mstVolume');
     }
 }

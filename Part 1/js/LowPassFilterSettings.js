@@ -1,12 +1,12 @@
 class FilterSettings {
     constructor(p) {
-        this.filterTypeLowPass = p.select('#lpfLowPass');
-        this.filterTypeBandPass = p.select('#lpfBandPass');
-        this.filterTypeHighPass = p.select('#lpfHighPass');
+        this.filterTypeLowPass = select('#lpfLowPass');
+        this.filterTypeBandPass = select('#lpfBandPass');
+        this.filterTypeHighPass = select('#lpfHighPass');
         
-        this.cutoffFrequency = p.select('#lpfCutoffFrequencySlider');
-        this.resonance = p.select('#lpfResonanceFrequency');
-        this.dryWet = p.select('#lpfDryWet');
-        this.outputLevel = p.select('#lpfOutputLevel');
+        this.cutoffFrequency = select('#lpfCutoffFrequencySlider');
+        this.resonance = select('#lpfResonanceFrequency');
+        this.dryWet = select('#lpfDryWet');
+        this.outputLevel = select('#lpfOutputLevel');
     }
 }

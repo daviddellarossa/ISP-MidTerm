@@ -1,11 +1,11 @@
 class DynamicCompressorSettings {
     constructor(p) {
-        this.attack = p.select('#dcAttack');
-        this.knee = p.select('#dcKnee');
-        this.release = p.select('#dcRelease');
-        this.ratio = p.select('#dcRatio');
-        this.threshold = p.select('#dcThreshold');
-        this.dryWet = p.select('#dcDryWet');
-        this.outputLevel = p.select('#dcOutputLevel');
+        this.attack = select('#dcAttack');
+        this.knee = select('#dcKnee');
+        this.release = select('#dcRelease');
+        this.ratio = select('#dcRatio');
+        this.threshold = select('#dcThreshold');
+        this.dryWet = select('#dcDryWet');
+        this.outputLevel = select('#dcOutputLevel');
     }
 }

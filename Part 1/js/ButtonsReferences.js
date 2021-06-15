@@ -1,12 +1,12 @@
 class ButtonsReferences {
     constructor(p) {
-        this.mic = p.select('#micBtn');
-        this.play = p.select('#playBtn');
-        this.stop = p.select('#stopBtn');
-        this.pause = p.select('#pauseBtn');
-        this.loop = p.select('#loopBtn');
-        this.record = p.select('#recordBtn');
-        this.skipToEnd = p.select('#skipToEndBtn');
-        this.skipToStart = p.select('#skipToStartBtn');
+        this.mic = select('#micBtn');
+        this.play = select('#playBtn');
+        this.stop = select('#stopBtn');
+        this.pause = select('#pauseBtn');
+        this.loop = select('#loopBtn');
+        this.record = select('#recordBtn');
+        this.skipToEnd = select('#skipToEndBtn');
+        this.skipToStart = select('#skipToStartBtn');
     }
 }
