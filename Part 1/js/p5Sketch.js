@@ -1,3 +1,4 @@
+let soundFilePath = './sounds/Ex2_sound1.wav';
 let canvas;
 let recorder;
 let soundFile;
@@ -6,7 +7,7 @@ let microphone;
 
 //Effects Settings
 let reverbSettings;
-let buttonsSettings;
+let buttonsReferences;
 let filterSettings;
 let waveshaperDistortionSettings;
 let delaySettings;
@@ -28,14 +29,14 @@ let outputFft;
 
 
 function preload() {
-    player = loadSound('./sounds/sound1.mp3', () => {console.log('File loaded')});
+    player = loadSound(soundFilePath, () => {console.log(`File ${soundFilePath} loaded`)});
     player.disconnect();      
     }
 
 
 function setup(){
     reverbSettings = new ReverbSettings();
-    buttonsSettings = new ButtonsReferences();
+    buttonsReferences = new ButtonsReferences();
     filterSettings = new FilterSettings();
     waveshaperDistortionSettings = new WaveshaperDistortionSettings();
     delaySettings = new DelaySettings();
@@ -43,9 +44,9 @@ function setup(){
     masterSettings = new MasterSettings();
 
     // //binding buttons
-    buttonsSettings.mic.mouseClicked((e) => {
+    buttonsReferences.mic.mouseClicked((e) => {
         console.log('Mic button pressed');
-        let isMicBtnPressed = buttonsSettings.mic.elt.ariaPressed === 'true';
+        let isMicBtnPressed = buttonsReferences.mic.elt.ariaPressed === 'true';
         if(isMicBtnPressed){
             console.log('Microphone on');
             player.disconnect();
@@ -63,38 +64,38 @@ function setup(){
         }
     })
 
-    buttonsSettings.play.mouseClicked((e)=>{ 
+    buttonsReferences.play.mouseClicked((e)=>{ 
         console.log('Play button pressed');
         if(player.isLoaded() && !player.isPlaying())
             player.play();
     });
 
-    buttonsSettings.stop.mouseClicked((e) =>{
+    buttonsReferences.stop.mouseClicked((e) =>{
         console.log('Stop button pressed');
         player.stop();
     });
 
-    buttonsSettings.pause.mouseClicked((e) => {
+    buttonsReferences.pause.mouseClicked((e) => {
         console.log('Pause button pressed');
             player.pause();
     });
 
-    buttonsSettings.loop.mouseClicked((e) => {
+    buttonsReferences.loop.mouseClicked((e) => {
         console.log('Loop button pressed');
-        let isLoopBtnPressed = buttonsSettings.looelt.ariaPressed === 'true';
+        let isLoopBtnPressed = buttonsReferences.loop.ariaPressed === 'true';
         player.setLoop(isLoopBtnPressed);
     });
 
-    buttonsSettings.record.mouseClicked((e) => {
+    buttonsReferences.record.mouseClicked((e) => {
         console.log('Record button pressed');
-        let isRecBtnPressed = buttonsSettings.record.elt.ariaPressed === 'true';
+        let isRecBtnPressed = buttonsReferences.record.elt.ariaPressed === 'true';
         if(isRecBtnPressed){
             if(player.enabled || microphone.enabled){
                 recorder.record(soundFile);
                 console.log('Recording');
             }
             else{
-                buttonsSettings.record.elt.ariaPressed = 'false';
+                buttonsReferences.record.elt.ariaPressed = 'false';
             }
             
         }else{
@@ -104,11 +105,11 @@ function setup(){
         }
     });
 
-    buttonsSettings.skipToEnd.mouseClicked((e) => {
+    buttonsReferences.skipToEnd.mouseClicked((e) => {
         player.jump(player.duration() - 1);
     });
 
-    buttonsSettings.skipToStart.mouseClicked((e) => {
+    buttonsReferences.skipToStart.mouseClicked((e) => {
         player.jump(0);
     });
 
@@ -432,6 +433,9 @@ function draw() {
     let spectrumIn = inputFft.analyze();
     let spectrumOut = outputFft.analyze();
     
+
+    //Frequency spectrum visualizer code adapted from https://p5js.org/zh-Hans/examples/sound-frequency-spectrum.html
+
     beginShape();
     
     for (i = 0; i < spectrumIn.length; i++) {

@@ -12,6 +12,7 @@
         <script src="js/p5js//1.3.1/p5.sound.js"></script>
         <script src="js/p5js/p5.speech.js"></script>
         <script src="node_modules/meyda/dist/web/meyda.js"></script>
+        <script src="js/ButtonsReferences.js"></script>
         <script src="js/sketch.js"></script>
         <script src="js/index.js"></script>
         <title>Intelligent Signal Processing Mid-Term assignment - Part 2</title>
@@ -23,5 +24,19 @@
                 <h2>by David Della Rossa</h2>
             </header>
         </main>
+        <section id="playbackControls">
+            <div class="container-fluid text-center">
+                <!-- All images from https://fonts.google.com/icons -->
+                <button class="btn btn-outline-danger" id="micBtn" data-bs-toggle="button"><img src="images/mic_black_24dp.svg" title="Mic" alt="Mic"></button>
+                <button class="btn btn-outline-dark" id="pauseBtn"><img src="images/pause_black_24dp.svg" title="Pause" alt="Pause"></button>
+                <button class="btn btn-outline-success" id="playBtn"><img src="images/play_arrow_black_24dp.svg" title="Play" alt="Play"></button>
+                <button class="btn btn-outline-dark" id="stopBtn"><img src="images/stop_black_24dp.svg" title="Stop" alt="Stop"></button>
+                <button class="btn btn-outline-dark" id="skipToStartBtn"><img src="images/skip_previous_black_24dp.svg" title="Skip to start" alt="Skip to start"></button>
+                <button class="btn btn-outline-dark" id="skipToEndBtn"><img src="images/skip_next_black_24dp.svg" title="Skip to end" alt="Skip to end"></button>
+                <button class="btn btn-outline-dark" id="loopBtn" data-bs-toggle="button"><img src="images/loop_black_24dp.svg" title="Loop" alt="Loop"></button>
+                <button class="btn btn-outline-danger" id="recordBtn" data-bs-toggle="button"><img src="images/radio_button_checked_black_24dp.svg" title="Record" alt="Record"></button>
+            </div>
+        </section>
+        <div id="p5Canvas"></div>
     </body>
 </html>
