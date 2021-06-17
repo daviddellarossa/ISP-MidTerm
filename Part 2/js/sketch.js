@@ -1,4 +1,4 @@
-let soundFilePath = './sounds/Ex2_sound1.wav';
+let soundFilePath = './sounds/Ex2_sound3.wav';
 let player;
 let meydaAnalizer;
 let amplitude;
@@ -148,11 +148,10 @@ function setup() {
         loudnessTotal.push(features.loudness.total);
         perceptualSpread.push(features.perceptualSpread);
         perceptualSharpness.push(features.perceptualSharpness);
-        //amplitudeSpectrum.push(features.amplitudeSpectrum);
       }
     })
   }
-  let canvas = createCanvas(800, 400);
+  let canvas = createCanvas(1200, 400);
   canvas.parent('p5Canvas');
 
 
@@ -184,25 +183,25 @@ function draw() {
   //Amplitude
 
  
-  // displayArray(rms, 0, 1, 8, color(255, 0, 0));
-  //displayArray(zcr, 0, 255, 4, color(0, 255, 0));
-  displayArray(energy, 0, 5, 1, color(0, 0, 255));
+  //displayArray(rms, 0, 1, 4, color(255, 0, 0));
+  //displayArray(zcr, 0, 512, 4, color(0, 255, 0));
+  //displayArray(energy, 0, 10, 1, color(0, 0, 255));
   //displayFreqArray(amplitudeSpectrum, 0, 10, 1, color(0, 255, 0));
-  //displayFreqArray(powerSpectrum, 0, 1, 1, color(200, 100, 100));
+  //displayFreqArray(powerSpectrum, 0, 10, 1, color(200, 100, 100));
 
-  // displayArray(spectralCentroid, 0, 20, 1, color(0, 0, 255));
-  // displayArray(spectralFlatness, 0, 1, 20, color(0, 255, 255));
+  //displayArray(spectralCentroid, 0, 100, 1, color(0, 0, 255));
+  //displayArray(spectralFlatness, 0, 1, 20, color(0, 255, 255));
   //displayArray(spectralSlope, 0, 1, 10, color(0, 255, 255));
   //displayArray(spectralRolloff, 0, 22000, 1, color(255, 255, 255));
-  //displayArray(spectralSkewness, -10, 10, 1, color(255, 255, 255));
-  // displayArray(spectralKurtosis, 0, 100, 1, color(255, 0, 255));
-  // displayFreqArray(chroma, 0, 1, 1, color(255, 255, 0))
+  //displayArray(spectralSkewness, -10, 20, 1, color(255, 255, 255));
+  //displayArray(spectralKurtosis, -300, 100, 1, color(255, 0, 255));
+  //displayFreqArray(chroma, 0, 1, 1, color(255, 255, 0))
   
   
   
   //displayFreqArray(loudness, 0, 2, 1, color(255, 0, 255));
   //displayArray(loudnessTotal, 0, 50, 1, color(0, 0, 255));
-  displayArray(perceptualSpread, 0, 1, 1, color(255, 100, 0));
+  //displayArray(perceptualSpread, 0, 1, 1, color(255, 100, 0));
   displayArray(perceptualSharpness, 0, 1, 1, color(100, 250, 100));
   
   

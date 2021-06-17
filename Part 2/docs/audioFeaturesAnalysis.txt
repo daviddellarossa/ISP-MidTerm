@@ -1,2 +1,14 @@
 Audio 1
-    rms, spectralCentroid, spectralFlatness, spectralKurtosis
+    rms, energy, loudness total: they all show the amplitude periodic pulsation like a tremolo effect.
+    spectralCentroid, spectralFlatness, spectral skewness: the all show four larger periods in the tune, corresponding to the change in chord.
+    spectralKurtosis, shows four periods corresponding to the four chords and highlights the more percussive sound at the beginning of each, which transform into a more tonal sound towards the end of it.
+
+Audio 2
+    rms, energy, loudness total: they all show that the amplitude starts low and grows gradually all the way to the end of the sound. It then slowly fades to 0 during the reverb tail at the very end.
+    amplitudeSpectrum, powerSpectrum: they show an area of high amplitude that starts around low frequency values and progressively moves gradually towards high frequency values
+    spectralFlatness: starts at relatively low values, then raises considerably towards the end of the sound, showing that the sound becomes more noisy towards the end.
+
+Audio 3:
+    amplitudeSpectrum, powerSpectrum: show clearly three predominant frequency bands in the sound and how they move towards the low registry.
+    rms, energy show two relative maximum in the amplitude of the sound, at about 1/3 and 2/3 of the sound
+    chroma shows one peak (although not very neat) that moves towards the low registry, as the sound progresses to the end. This highlights the pitch of the sound moving from high frequency notes to low frequency notes.
