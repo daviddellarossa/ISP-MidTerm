@@ -12,3 +12,22 @@ Audio 3:
     amplitudeSpectrum, powerSpectrum: show clearly three predominant frequency bands in the sound and how they move towards the low registry.
     rms, energy show two relative maximum in the amplitude of the sound, at about 1/3 and 2/3 of the sound
     chroma shows one peak (although not very neat) that moves towards the low registry, as the sound progresses to the end. This highlights the pitch of the sound moving from high frequency notes to low frequency notes.
+
+
+
+
+song:
+
+rms and energy can be used together to introduce some variation in the same object, 
+zrc,
+amplitudeSpectrum and powerSpectrum can be used together as for rms and energy
+
+spectralCentroid  it varies only in some changes, for the rest it is quite regular
+
+spectralFlatness reacts to the song pulsations
+
+spectralRolloff reacts to the rhythm 
+
+spectralSkewness reacts to the timber
+
+
