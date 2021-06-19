@@ -1,6 +1,6 @@
 class EllipseDataShape extends DataShape{
-    constructor(){
-        super();
+    constructor(x, y, width, height, index){
+        super(null, x, y, width, height, index);
     }
 
     draw(){

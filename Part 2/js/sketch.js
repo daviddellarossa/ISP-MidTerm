@@ -3,6 +3,7 @@ let player;
 let meydaAnalizer;
 let buttonsReferences;
 let dataShapeContainer;
+let backgroundColor;
 
 
 function preload() {
@@ -11,8 +12,7 @@ function preload() {
 
 function setup() {
   buttonsReferences = new ButtonsReferences();
-  dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory());
-
+  
     // //binding buttons
     //   buttonsReferences.mic.mouseClicked((e) => {
     //     console.log('Mic button pressed');
@@ -60,7 +60,7 @@ function setup() {
         player.setLoop(isLoopBtnPressed);
     });
 
-    
+  
   if(typeof(Meyda) === "undefined"){
     console.log("Meyda could not be found");
   }else{
@@ -92,32 +92,41 @@ function setup() {
 
         let dataSet = new DataSet();
 
-        dataSet.rms = features.rms;
-        dataSet.zcr = features.zcr;
-        dataSet.energy = features.energy;
-        dataSet.amplitudeSpectrum = features.amplitudeSpectrum;
-        dataSet.powerSpectrum = features.powerSpectrum;
-        dataSet.spectralCentroid = features.spectralCentroid;
-        dataSet.spectralFlatness = features.spectralFlatness;
-        dataSet.spectralSlope = features.spectralSlope;
-        dataSet.spectralRolloff = features.spectralRolloff;
-        dataSet.spectralSkewness = features.spectralSkewness;
-        dataSet.spectralKurtosis = features.spectralKurtosis;
-        dataSet.chroma = features.chroma;
-        dataSet.loudness = features.loudness.specific;
-        dataSet.loudnessTotal = features.loudness.total;
-        dataSet.perceptualSpread = features.perceptualSpread;
-        dataSet.perceptualSharpness = features.perceptualSharpness;
+        dataSet._rms = features.rms;
+        dataSet._zcr = features.zcr;
+        dataSet._energy = features.energy;
+        dataSet._amplitudeSpectrum = features.amplitudeSpectrum;
+        dataSet._powerSpectrum = features.powerSpectrum;
+        dataSet._spectralCentroid = features.spectralCentroid;
+        dataSet._spectralFlatness = features.spectralFlatness;
+        dataSet._spectralSlope = features.spectralSlope;
+        dataSet._spectralRolloff = features.spectralRolloff;
+        dataSet._spectralSkewness = features.spectralSkewness;
+        dataSet._spectralKurtosis = features.spectralKurtosis;
+        dataSet._chroma = features.chroma;
+        dataSet._loudness = features.loudness.specific;
+        dataSet._loudnessTotal = features.loudness.total;
+        dataSet._perceptualSpread = features.perceptualSpread;
+        dataSet._perceptualSharpness = features.perceptualSharpness;
 
         dataShapeContainer.update(dataSet);
       }
     })
   }
-  let canvas = createCanvas(1200, 400);
+  let canvas = createCanvas(1200, 800);
   canvas.parent('p5Canvas');
+  backgroundColor = color(0, 0, 0);
+  background(backgroundColor);
+  stroke(255);
+  colorMode(HSL, 100);
+
+  rectMode(CENTER);
+  dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory(), width, height);
+
   
 }
   
 function draw() {
+    background(backgroundColor);
     dataShapeContainer.draw();
 }
