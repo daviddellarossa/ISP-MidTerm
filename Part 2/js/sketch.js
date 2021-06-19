@@ -121,7 +121,10 @@ function setup() {
   colorMode(HSL, 100);
 
   rectMode(CENTER);
-  dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory(), width, height);
+  ellipseMode(RADIUS);
+  
+  //dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory(), width, height);
+  dataShapeContainer = new DataShapeContainer( new EllipseDataShapeFactory(), width, height);
 
   
 }
