@@ -1,4 +1,5 @@
 class DataSet{
+
     constructor(){
             this.rms;
             this.zcr;
@@ -21,6 +22,7 @@ class DataSet{
     getChroma(idx){
         return this._chroma ? this._chroma[idx] : 0;
     }
+    
     getPowerSpectrum(idx){
         return this._powerSpectrum ? this._powerSpectrum[idx] : 0;
     }

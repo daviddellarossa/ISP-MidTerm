@@ -1,12 +1,12 @@
+//Implements DataShape base class for visualizing Polygons
 class PolyDataShape extends DataShape{
+
     constructor(x, y, width, height, index){
         super(x, y, width, height, index);
         this.buffer=[];
         this.bufferSize = 5;
         this.npoints = 3;
     }
-
-
 
     draw(){
         noFill();
@@ -43,6 +43,7 @@ class PolyDataShape extends DataShape{
     }
 
     //Polygon function adapted from https://p5js.org/examples/form-regular-polygon.html
+    //Draws a polygon 
     polygon(x, y, width, height) {
         let angle = TWO_PI / this.npoints;
         beginShape();

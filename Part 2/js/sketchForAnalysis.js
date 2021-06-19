@@ -130,8 +130,7 @@ function setup() {
       ],
       "callback": features => {
         console.log(features);
-        //here set the variable that will be controlled by the extracted values.
-        //<variable name> = features.rms; // these values need to be remapped to a more suitable set of values.
+
         rms.push(features.rms);
         zcr.push(features.zcr);
         energy.push(features.energy)

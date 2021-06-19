@@ -1,3 +1,4 @@
+//Container and coordinator of DataShapes 
 class DataShapeContainer{
     
     constructor(factory, width, height){
@@ -15,6 +16,8 @@ class DataShapeContainer{
         let halfBufferSize = bufferSize/2;
         let sampleRate = meydaAnalizer._m.sampleRate;
         let halfSampleRate = sampleRate / 2;
+
+        //List of properties available from Meyda and their range of values
         let dataSetProperties = [
             {p: "_rms",                  min:0, max:1},
             {p: "_zcr",                  min:0, max:halfBufferSize - 1},
@@ -25,19 +28,21 @@ class DataShapeContainer{
             {p: "_spectralRolloff",      min:0, max:halfSampleRate},
             {p: "_spectralSkewness",     min:-1, max:1},
             {p: "_spectralKurtosis",     min:0, max:1},
-            //{p: "loudnessTotal",        min:0, max:0},
             {p: "_perceptualSpread",     min:0, max:1},
             {p: "_perceptualSharpness",  min:0, max:1},
         ];
 
         this.shapes = [];
+
+        //Initialize the shapes
         for(let i = 0; i < this.numOfShapes; ++i){
+
+            //Assign randomly a Meyda property to the shape
             let rnd = Math.floor(Math.random() * dataSetProperties.length);
             let shape = this.shapeFactory.getDataShape((i + 1) * this.width/(this.numOfShapes + 1), this.height/2, this.width, this.height, i);
             shape.dataSetProperty = dataSetProperties[rnd] ;
             this.shapes.push(shape);
         }
-
     }
 
     resetFactory(factory){
@@ -46,8 +51,7 @@ class DataShapeContainer{
     }
 
     update(dataSet){
-        this.dataSet;
-        //console.log(`New update: ${dataSet}`);
+        this.dataSet = dataSet;
 
         for(let shape of this.shapes){
             shape.update(dataSet);
@@ -58,6 +62,5 @@ class DataShapeContainer{
         for(let shape of this.shapes){
             shape.draw();
         }
-
     }
 }

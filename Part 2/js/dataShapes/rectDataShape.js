@@ -1,4 +1,6 @@
+//Implements DataShape base class for visualizing Rectangles
 class RectDataShape extends DataShape{
+
     constructor(x, y, width, height, index){
         super(x, y, width, height, index);
         this.buffer=[];

@@ -15,26 +15,6 @@ function setup() {
   buttonsReferences = new ButtonsReferences();
   
     // //binding buttons
-    //   buttonsReferences.mic.mouseClicked((e) => {
-    //     console.log('Mic button pressed');
-    //     let isMicBtnPressed = buttonsReferences.mic.elt.ariaPressed === 'true';
-    //     if(isMicBtnPressed){
-    //         console.log('Microphone on');
-    //         player.disconnect();
-    //         microphone.connect(filterEffect);
-    //         inputFft = new p5.FFT();
-    //         inputFft.setInput(microphone);
-            
-    //     }else{
-    //         console.log('Microphone off');
-    //         microphone.stop();
-    //         microphone.disconnect();
-    //         inputFft = new p5.FFT();
-    //         inputFft.setInput(player);
-    //         player.connect(filterEffect);
-    //     }
-    // })
-
     buttonsReferences.play.mouseClicked((e)=>{ 
         console.log('Play button pressed');
         if(player.isLoaded() && !player.isPlaying()){
@@ -49,12 +29,6 @@ function setup() {
         meydaAnalizer.stop();
     });
 
-    buttonsReferences.pause.mouseClicked((e) => {
-        console.log('Pause button pressed');
-            player.pause();
-            meydaAnalizer.stop();
-    });
-
     buttonsReferences.loop.mouseClicked((e) => {
         console.log('Loop button pressed');
         let isLoopBtnPressed = buttonsReferences.loop.ariaPressed === 'true';
@@ -62,6 +36,7 @@ function setup() {
     });
 
   
+    //Configuring Meyda
   if(typeof(Meyda) === "undefined"){
     console.log("Meyda could not be found");
   }else{
@@ -88,6 +63,7 @@ function setup() {
       ],
       "callback": features => {
 
+        //Create a new DataSet from Meyda values
         let dataSet = new DataSet();
 
         dataSet._rms = features.rms;
@@ -107,17 +83,20 @@ function setup() {
         dataSet._perceptualSpread = features.perceptualSpread;
         dataSet._perceptualSharpness = features.perceptualSharpness;
 
+        //Update the dataShapeContainer
         dataShapeContainer.update(dataSet);
       }
     })
   }
 
+  //Configure p5.Speech
   speech = new p5.SpeechRec();
   speech.onResult = parseResult;
   speech.continuous = true;
   speech.interimResults = true;
   speech.start();
 
+  //Configure the canvas
   let canvas = createCanvas(1200, 800);
   canvas.parent('p5Canvas');
   backgroundColor = color(0, 0, 0);
@@ -128,6 +107,7 @@ function setup() {
   rectMode(CENTER);
   ellipseMode(RADIUS);
   
+  //Configure the DataShapeContainer
   dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory(), width, height);
 }
   
@@ -136,6 +116,7 @@ function draw() {
     dataShapeContainer.draw();
 }
 
+//Parse results from p5.Speech
 function parseResult(){
   let mostRecentWord = speech.resultString.split(' ').pop();
   console.log(mostRecentWord);

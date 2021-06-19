@@ -1,4 +1,6 @@
+//Datashape is the base class for all the DataShape visualizers
 class DataShape{
+
     constructor(x, y, height, width, index) {
         this.index = index;
         this.dataSet = new DataSet();
@@ -8,6 +10,7 @@ class DataShape{
         this.width = width;
         this.dataSetProperty;
     }
+
     update(dataSet){
         this.dataSet = dataSet;
     }
