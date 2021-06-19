@@ -27,6 +27,7 @@ function setup() {
         console.log('Stop button pressed');
         player.stop();
         meydaAnalizer.stop();
+        dataShapeContainer.resetFactory(dataShapeContainer.shapeFactory);
     });
 
     buttonsReferences.loop.mouseClicked((e) => {
