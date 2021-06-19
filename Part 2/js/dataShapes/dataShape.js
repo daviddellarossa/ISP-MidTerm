@@ -1,6 +1,5 @@
 class DataShape{
-    constructor(p5Context, x, y, height, width, index) {
-        //this.p5Context = p5Context
+    constructor(x, y, height, width, index) {
         this.index = index;
         this.dataSet = new DataSet();
         this.x = x;

@@ -4,6 +4,7 @@ let meydaAnalizer;
 let buttonsReferences;
 let dataShapeContainer;
 let backgroundColor;
+let speech;
 
 
 function preload() {
@@ -86,9 +87,6 @@ function setup() {
         "perceptualSharpness"
       ],
       "callback": features => {
-        console.log(features);
-        //here set the variable that will be controlled by the extracted values.
-        //<variable name> = features.rms; // these values need to be remapped to a more suitable set of values.
 
         let dataSet = new DataSet();
 
@@ -113,6 +111,13 @@ function setup() {
       }
     })
   }
+
+  speech = new p5.SpeechRec();
+  speech.onResult = parseResult;
+  speech.continuous = true;
+  speech.interimResults = true;
+  speech.start();
+
   let canvas = createCanvas(1200, 800);
   canvas.parent('p5Canvas');
   backgroundColor = color(0, 0, 0);
@@ -123,13 +128,50 @@ function setup() {
   rectMode(CENTER);
   ellipseMode(RADIUS);
   
-  //dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory(), width, height);
-  dataShapeContainer = new DataShapeContainer( new EllipseDataShapeFactory(), width, height);
-
-  
+  dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory(), width, height);
 }
   
 function draw() {
     background(backgroundColor);
     dataShapeContainer.draw();
+}
+
+function parseResult(){
+  let mostRecentWord = speech.resultString.split(' ').pop();
+  console.log(mostRecentWord);
+
+  if (mostRecentWord.toLowerCase().indexOf('square')!== -1){ 
+    dataShapeContainer.resetFactory(new RectDataShapeFactory());
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('circle')!== -1){ 
+    dataShapeContainer.resetFactory(new EllipseDataShapeFactory());
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('triangle')!== -1){ 
+    dataShapeContainer.resetFactory(new PolyDataShapeFactory(3));
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('hexagon')!== -1){ 
+    dataShapeContainer.resetFactory(new PolyDataShapeFactory(6));
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('pentagon')!== -1){ 
+    dataShapeContainer.resetFactory(new PolyDataShapeFactory(5));
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('blue')!== -1){ 
+    backgroundColor = color(67, 100, 10);
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('black')!== -1){ 
+    backgroundColor = color(0, 100, 0);
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('red')!== -1){ 
+    backgroundColor = color(0, 100, 10);
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('green')!== -1){ 
+    backgroundColor = color(33, 100, 10);
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('yellow')!== -1){ 
+    backgroundColor = color(17, 100, 10);
+  }
+  else if (mostRecentWord.toLowerCase().indexOf('magenta')!== -1){ 
+    backgroundColor = color(83, 100, 10);
+  }
+
 }

@@ -1,11 +1,9 @@
 class RectDataShape extends DataShape{
     constructor(x, y, width, height, index){
-        super(null, x, y, width, height, index);
+        super(x, y, width, height, index);
         this.buffer=[];
         this.bufferSize = 5;
     }
-
-
 
     draw(){
         noFill();
