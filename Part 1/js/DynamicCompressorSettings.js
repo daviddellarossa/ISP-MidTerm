@@ -1,3 +1,6 @@
+/**
+ * References for the HTML controls for the Dynamic Compressor Effect
+ */
 class DynamicCompressorSettings {
     constructor(p) {
         this.attack = select('#dcAttack');

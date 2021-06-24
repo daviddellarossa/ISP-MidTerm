@@ -1,3 +1,6 @@
+/**
+ * References to the HTML controls for the Reverb effect
+ */
 class ReverbSettings {
     constructor(p) {
         this.duration = select('#revDuration');

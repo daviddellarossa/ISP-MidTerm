@@ -1,3 +1,6 @@
+/**
+ * References to the HTML controls for the Waveshaper Distortion effect
+ */
 class WaveshaperDistortionSettings {
     constructor(p) {
         this.distortionAmount = select('#wsdDistortionAmount');

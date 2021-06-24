@@ -1,4 +1,4 @@
-let soundFilePath = './sounds/Ex2_sound1.wav';
+let soundFilePath = 'sounds/kipling.wav';
 let canvas;
 let recorder;
 let soundFile;
@@ -35,6 +35,8 @@ function preload() {
 
 
 function setup(){
+
+    //Create references to the HTML controls
     reverbSettings = new ReverbSettings();
     buttonsReferences = new ButtonsReferences();
     filterSettings = new FilterSettings();
@@ -43,7 +45,8 @@ function setup(){
     dynamicCompressorSettings = new DynamicCompressorSettings();
     masterSettings = new MasterSettings();
 
-    // //binding buttons
+    //binding buttons' events from the UI to event listeners
+    //Mic button
     buttonsReferences.mic.mouseClicked((e) => {
         console.log('Mic button pressed');
         let isMicBtnPressed = buttonsReferences.mic.elt.ariaPressed === 'true';
@@ -64,28 +67,33 @@ function setup(){
         }
     })
 
+    //Play button
     buttonsReferences.play.mouseClicked((e)=>{ 
         console.log('Play button pressed');
         if(player.isLoaded() && !player.isPlaying())
             player.play();
     });
 
+    //Stop button
     buttonsReferences.stop.mouseClicked((e) =>{
         console.log('Stop button pressed');
         player.stop();
     });
 
+    //Pause button
     buttonsReferences.pause.mouseClicked((e) => {
         console.log('Pause button pressed');
             player.pause();
     });
 
+    //Loop button
     buttonsReferences.loop.mouseClicked((e) => {
         console.log('Loop button pressed');
-        let isLoopBtnPressed = buttonsReferences.loop.ariaPressed === 'true';
+        let isLoopBtnPressed = buttonsReferences.loop.elt.ariaPressed === 'true';
         player.setLoop(isLoopBtnPressed);
     });
 
+    //Record button
     buttonsReferences.record.mouseClicked((e) => {
         console.log('Record button pressed');
         let isRecBtnPressed = buttonsReferences.record.elt.ariaPressed === 'true';
@@ -105,16 +113,18 @@ function setup(){
         }
     });
 
+    //Skip to end
     buttonsReferences.skipToEnd.mouseClicked((e) => {
         player.jump(player.duration() - 1);
     });
 
+    //Skip to start
     buttonsReferences.skipToStart.mouseClicked((e) => {
         player.jump(0);
     });
 
 
-    //binding lowpass filter controls
+    //binding filter UI control events with event listeners
     filterSettings.filterTypeLowPass.mouseClicked((e) => {
         console.log(`Filter - Filter Type: ${filterSettings.filterTypeLowPass.value()}`);
         filterEffect.setType(filterSettings.filterTypeLowPass.value());
@@ -145,7 +155,7 @@ function setup(){
     });
 
 
-    //binding waveshaper distortion controls
+    //binding waveshaper distortion UI control events with event listeners
 
     waveshaperDistortionSettings.distortionAmount.mouseClicked((e) => {
         var oversample = waveshaperDistortionSettings.oversample.value() == 0
@@ -185,7 +195,7 @@ function setup(){
         waveshaperDistortionEffect.amp(volume)
     });
 
-    //binding delay controls
+    //binding delay UI control events with event listeners
 
     delaySettings.delayTypeDefault.mouseClicked((e) => {
         console.log(`Delay - Delay Type: ${delaySettings.delayTypeDefault.value()}`);
@@ -222,7 +232,7 @@ function setup(){
         delayEffect.amp(volume)
     })
 
-    //binding dynamic compressor controls
+    //binding dynamic compressor UI control events with event listeners
 
     dynamicCompressorSettings.attack.mouseClicked((e) => {
         console.log(`Dynamic Compression - Attack: ${dynamicCompressorSettings.attack.value()}`);
@@ -286,7 +296,7 @@ function setup(){
     });
     
 
-    //binding reverb controls
+    //binding reverb UI control events with event listeners
 
     reverbSettings.duration.mouseClicked((e) => {
         console.log(`Reverb - Duration: ${reverbSettings.duration.value()}`);
@@ -311,7 +321,7 @@ function setup(){
         reverbEffect.amp(volume)
     });
     
-    //binding master controls
+    //binding master volume UI control events with event listeners
 
     masterSettings.volume.mouseClicked((e) => {
         console.log(`Gain - Volume: ${masterSettings.volume.value()}`);
@@ -327,6 +337,7 @@ function setup(){
     microphone.start();
 
     //Setting up SoundRecorder
+
     recorder = new p5.SoundRecorder();
     soundFile = new p5.SoundFile();
     
@@ -344,6 +355,7 @@ function setup(){
 
 
     //Setting up WaveShaper Distortion
+
     waveshaperDistortionEffect = new p5.Distortion();
     waveshaperDistortionEffect.process(
         filterEffect,
@@ -359,6 +371,7 @@ function setup(){
     waveshaperDistortionEffect.amp(waveshaperDistortionSettings.outputLevel.value());
 
     //Setting up Delay
+
     delayEffect = new p5.Delay()
     delayEffect.process(
         waveshaperDistortionEffect,
@@ -386,6 +399,7 @@ function setup(){
     dynamicCompressorEffect.amp(dynamicCompressorSettings.outputLevel.value());
 
     //Setting up Reverb Effect
+
     reverbEffect = new p5.Reverb();
     reverbEffect.process(
         dynamicCompressorEffect, 
@@ -397,6 +411,11 @@ function setup(){
     reverbEffect.drywet(reverbSettings.dryWet.value());
     reverbEffect.amp(reverbSettings.outputLevel.value());
 
+    //Setting up Master Volume
+    masterVolumeEffect = new p5.Gain();
+    masterVolumeEffect.amp(masterSettings.volume.value());
+
+    //Preparing effects for chaining
 
     waveshaperDistortionEffect.disconnect();
     dynamicCompressorEffect.disconnect();
@@ -405,10 +424,8 @@ function setup(){
     delayEffect.disconnect();
     player.disconnect();
 
-    masterVolumeEffect = new p5.Gain();
-    masterVolumeEffect.amp(masterSettings.volume.value());
-
     //Connect chain
+
     player.connect(filterEffect);
     filterEffect.connect(waveshaperDistortionEffect);
     waveshaperDistortionEffect.connect(delayEffect);
@@ -417,10 +434,14 @@ function setup(){
     reverbEffect.connect(masterVolumeEffect);
     masterVolumeEffect.connect();
 
+    //Setting up FFTs for Spectrum display
+
     inputFft = new p5.FFT();
     inputFft.setInput(player);
 
     outputFft = new p5.FFT()
+
+    //Setting up canvas
 
     let canvasContainer = select('#spectrumCanvas');
     canvas = createCanvas(canvasContainer.width, canvasContainer.width / 4);
@@ -430,6 +451,8 @@ function setup(){
 
 function draw() {
     canvas.background(255)
+
+    //Read input and output spectra for the current frame
     let spectrumIn = inputFft.analyze();
     let spectrumOut = outputFft.analyze();
     
@@ -438,17 +461,24 @@ function draw() {
 
     beginShape();
     
+    //drawing Input spectrum
     for (i = 0; i < spectrumIn.length; i++) {
         var x = map(i, 0, spectrumIn.length, 0, canvas.width / 2);
         vertex(x, map(spectrumIn[i], 0, 255, canvas.height * 0.9, 0));
     }
 
-    
+    //drawing Output spectrum
     for (i = 0; i < spectrumOut.length; i++) {
         var x = map(i, 0, spectrumOut.length, canvas.width / 2, canvas.width);
         vertex(x, map(spectrumOut[i], 0, 255, canvas.height * 0.9, 0));
     }
     endShape();
-
-
 }
+
+/**
+ * Resize canvas for Input and Output Spectra when Window is resized
+ */
+function windowResized() {
+    let canvasContainer = select('#spectrumCanvas');
+    resizeCanvas(canvasContainer.width, canvasContainer.width / 4);
+  }
