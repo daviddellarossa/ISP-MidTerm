@@ -12,9 +12,11 @@ function preload() {
 }
 
 function setup() {
+
+  //Instantiate button references
   buttonsReferences = new ButtonsReferences();
   
-    // //binding buttons
+    //Binding HTML buttons events to event listeners
     buttonsReferences.play.mouseClicked((e)=>{ 
         console.log('Play button pressed');
         if(player.isLoaded() && !player.isPlaying()){
@@ -108,7 +110,7 @@ function setup() {
   rectMode(CENTER);
   ellipseMode(RADIUS);
   
-  //Configure the DataShapeContainer
+  //Configure the DataShapeContainer, passing a default ShapeFactory
   dataShapeContainer = new DataShapeContainer( new RectDataShapeFactory(), width, height);
 }
   
@@ -117,7 +119,12 @@ function draw() {
     dataShapeContainer.draw();
 }
 
-//Parse results from p5.Speech
+
+/**
+ * Parse results from p5.Speech and takes the proper actions, 
+ * like resetting the factory on dataShapeContainer
+ * or changing the background colour
+ */
 function parseResult(){
   let mostRecentWord = speech.resultString.split(' ').pop();
   console.log(mostRecentWord);

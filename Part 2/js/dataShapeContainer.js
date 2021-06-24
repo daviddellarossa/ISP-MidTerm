@@ -1,4 +1,7 @@
-//Container and coordinator of DataShapes 
+/**
+ * Container and coordinator of DataShapes 
+ * Instantiates the shapes to be displayed, calling the methods on the factory
+ */
 class DataShapeContainer{
     
     constructor(factory, width, height){
@@ -11,6 +14,10 @@ class DataShapeContainer{
         this.buildShapes();
     }
 
+    /**
+     * Builds the shapes, invoking the method in the factory
+     * Then it assigns a random property from those available from Meyda
+     */
     buildShapes(){
         let bufferSize = meydaAnalizer._m.bufferSize;
         let halfBufferSize = bufferSize/2;
@@ -45,6 +52,10 @@ class DataShapeContainer{
         }
     }
 
+    /**
+     * Replace the current factory
+     * @param {dataShapeFactory} factory 
+     */
     resetFactory(factory){
         this.shapeFactory = factory;
         this.buildShapes();

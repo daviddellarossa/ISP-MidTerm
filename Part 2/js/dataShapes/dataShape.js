@@ -1,4 +1,6 @@
-//Datashape is the base class for all the DataShape visualizers
+/**
+ * Datashape is the base class for all the DataShape visualizers
+ */
 class DataShape{
 
     constructor(x, y, height, width, index) {
